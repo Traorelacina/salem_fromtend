@@ -62,7 +62,6 @@ export default function AdminServices() {
   }
 
   const handleSave = async () => {
-    // Validation basique côté client
     if (!form.title || !form.short_description || !form.content) {
       showToast('Veuillez remplir tous les champs obligatoires (*)', 'error')
       return
@@ -71,22 +70,15 @@ export default function AdminServices() {
     setSaving(true)
     try {
       const fd = new FormData()
-      
-      // Ajouter tous les champs du formulaire
       fd.append('title', form.title || '')
       fd.append('short_description', form.short_description || '')
       fd.append('content', form.content || '')
       fd.append('order', form.order?.toString() || '0')
       fd.append('is_active', form.is_active ? '1' : '0')
-      
-      // Ajouter l'image si présente
-      if (imgFile) {
-        fd.append('image', imgFile)
-      }
+      if (imgFile) fd.append('image', imgFile)
       
       let res
       if (editing) {
-        // Pour PUT avec FormData, Laravel nécessite le champ _method
         fd.append('_method', 'PUT')
         res = await post(`/admin/services/${editing.id}`, fd)
       } else {
@@ -94,7 +86,6 @@ export default function AdminServices() {
       }
       
       if (!res.success) throw new Error(res.message || 'Une erreur est survenue')
-      
       showToast(editing ? 'Service mis à jour avec succès.' : 'Service créé avec succès.')
       setModal(false)
       load()
@@ -122,14 +113,9 @@ export default function AdminServices() {
 
   const handleToggleActive = async (item) => {
     try {
-      const res = await put(`/admin/services/${item.id}`, { 
-        is_active: !item.is_active 
-      })
-      if (res.success) {
-        load()
-      } else {
-        showToast('Erreur lors de la mise à jour', 'error')
-      }
+      const res = await put(`/admin/services/${item.id}`, { is_active: !item.is_active })
+      if (res.success) { load() }
+      else showToast('Erreur lors de la mise à jour', 'error')
     } catch (e) {
       showToast('Erreur lors de la mise à jour', 'error')
     }
@@ -138,35 +124,20 @@ export default function AdminServices() {
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     setImgFile(file)
-    
-    // Nettoyer l'ancienne préview pour éviter les fuites mémoire
-    if (preview && preview.startsWith('blob:')) {
-      URL.revokeObjectURL(preview)
-    }
-    
-    if (file) {
-      setPreview(URL.createObjectURL(file))
-    } else {
-      setPreview(null)
-    }
+    if (preview && preview.startsWith('blob:')) URL.revokeObjectURL(preview)
+    if (file) setPreview(URL.createObjectURL(file))
+    else setPreview(null)
   }
 
   const handleCloseModal = () => {
-    // Nettoyer la préview blob lors de la fermeture
-    if (preview && preview.startsWith('blob:')) {
-      URL.revokeObjectURL(preview)
-    }
+    if (preview && preview.startsWith('blob:')) URL.revokeObjectURL(preview)
     setModal(false)
     setPreview(null)
     setImgFile(null)
   }
 
   const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }))
-
-  const handleNumberChange = (k) => (e) => {
-    const value = parseInt(e.target.value) || 0
-    setForm(p => ({ ...p, [k]: value }))
-  }
+  const handleNumberChange = (k) => (e) => setForm(p => ({ ...p, [k]: parseInt(e.target.value) || 0 }))
 
   return (
     <AdminPage>
@@ -196,7 +167,7 @@ export default function AdminServices() {
                           width: '42px', 
                           height: '42px', 
                           borderRadius: '10px', 
-                          background: 'var(--primary-lt)', 
+                          background: 'rgba(79,195,247,0.12)', 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center', 
@@ -204,34 +175,21 @@ export default function AdminServices() {
                           overflow: 'hidden' 
                         }}>
                           {item.image_url ? (
-                            <img 
-                              src={item.image_url} 
-                              alt={item.title}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                            />
+                            <img src={item.image_url} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           ) : (
-                            <Settings size={18} style={{ color: 'var(--primary)' }} />
+                            <Settings size={18} style={{ color: '#4fc3f7' }} />
                           )}
                         </div>
                         <div>
-                          <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text)' }}>
-                            {item.title}
-                          </div>
+                          <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'white' }}>{item.title}</div>
                           {item.slug && (
-                            <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', fontFamily: 'monospace' }}>
-                              /{item.slug}
-                            </div>
+                            <div style={{ fontSize: '0.72rem', color: 'rgba(186,230,253,0.35)', fontFamily: 'monospace' }}>/{item.slug}</div>
                           )}
                         </div>
                       </div>
                     </Td>
-                    <Td style={{ color: 'var(--text-2)', maxWidth: '260px' }}>
-                      <div style={{ 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis', 
-                        whiteSpace: 'nowrap', 
-                        fontSize: '0.83rem' 
-                      }}>
+                    <Td style={{ color: 'rgba(186,230,253,0.55)', maxWidth: '260px' }}>
+                      <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.83rem' }}>
                         {item.short_description}
                       </div>
                     </Td>
@@ -243,19 +201,16 @@ export default function AdminServices() {
                         width: '28px', 
                         height: '28px', 
                         borderRadius: '6px', 
-                        background: '#f1f5f9', 
+                        background: 'rgba(79,195,247,0.1)', 
                         fontSize: '0.8rem', 
                         fontWeight: 700, 
-                        color: 'var(--text-2)' 
+                        color: 'rgba(186,230,253,0.6)' 
                       }}>
                         {item.order}
                       </span>
                     </Td>
                     <Td>
-                      <Toggle 
-                        checked={item.is_active} 
-                        onChange={() => handleToggleActive(item)} 
-                      />
+                      <Toggle checked={item.is_active} onChange={() => handleToggleActive(item)} />
                     </Td>
                     <Td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -273,8 +228,8 @@ export default function AdminServices() {
             </table>
           ) : (
             <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-              <Settings size={36} style={{ color: 'var(--border)', margin: '0 auto 1rem' }} />
-              <p style={{ color: 'var(--text-3)', fontSize: '0.87rem' }}>
+              <Settings size={36} style={{ color: 'rgba(79,195,247,0.25)', margin: '0 auto 1rem' }} />
+              <p style={{ color: 'rgba(186,230,253,0.3)', fontSize: '0.87rem' }}>
                 Aucun service. Créez votre premier service !
               </p>
               <Btn onClick={openCreate} style={{ marginTop: '1rem' }}>
@@ -292,48 +247,15 @@ export default function AdminServices() {
         width="600px"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-          <Input 
-            label="Titre *" 
-            value={form.title} 
-            onChange={f('title')} 
-            placeholder="Développement Web"
-            required
-          />
-          
-          <Textarea 
-            label="Description courte *" 
-            value={form.short_description} 
-            onChange={f('short_description')} 
-            style={{ minHeight: '75px' }}
-            required
-          />
-          
-          <Textarea 
-            label="Contenu complet *" 
-            value={form.content} 
-            onChange={f('content')} 
-            style={{ minHeight: '130px' }}
-            required
-          />
-          
+          <Input label="Titre *" value={form.title} onChange={f('title')} placeholder="Développement Web" required />
+          <Textarea label="Description courte *" value={form.short_description} onChange={f('short_description')} style={{ minHeight: '75px' }} required />
+          <Textarea label="Contenu complet *" value={form.content} onChange={f('content')} style={{ minHeight: '130px' }} required />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <Input 
-              label="Ordre d'affichage" 
-              type="number" 
-              value={form.order} 
-              onChange={handleNumberChange('order')}
-              min="0"
-            />
-            
+            <Input label="Ordre d'affichage" type="number" value={form.order} onChange={handleNumberChange('order')} min="0" />
             <div style={{ display: 'flex', alignItems: 'center', paddingTop: '24px' }}>
-              <Toggle 
-                label="Service actif" 
-                checked={form.is_active} 
-                onChange={v => setForm(p => ({ ...p, is_active: v }))} 
-              />
+              <Toggle label="Service actif" checked={form.is_active} onChange={v => setForm(p => ({ ...p, is_active: v }))} />
             </div>
           </div>
-          
           <FileInput 
             label="Image du service (optionnel)" 
             accept="image/*" 
@@ -341,20 +263,9 @@ export default function AdminServices() {
             onChange={handleFileChange}
             help="Formats acceptés : jpeg, png, jpg, gif, webp (max 2Mo)"
           />
-          
-          <div style={{ 
-            display: 'flex', 
-            gap: '0.75rem', 
-            justifyContent: 'flex-end', 
-            paddingTop: '0.5rem', 
-            borderTop: '1px solid var(--border)' 
-          }}>
-            <Btn variant="ghost" onClick={handleCloseModal}>
-              Annuler
-            </Btn>
-            <Btn onClick={handleSave} disabled={saving}>
-              {saving ? 'Enregistrement…' : 'Enregistrer'}
-            </Btn>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', paddingTop: '0.5rem', borderTop: '1px solid rgba(79,195,247,0.1)' }}>
+            <Btn variant="ghost" onClick={handleCloseModal}>Annuler</Btn>
+            <Btn onClick={handleSave} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</Btn>
           </div>
         </div>
       </Modal>
