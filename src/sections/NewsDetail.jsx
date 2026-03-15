@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Calendar, User, Tag, Loader } from 'lucide-react'
 import Container from '../components/Container'
-import PageHero from '../components/PageHero'
+import PageHero from '../components/Pagehero'
 import { fadeUp } from '../animations/fadeAnimations'
 
 const API = import.meta.env.VITE_API_URL ?? '/api'
