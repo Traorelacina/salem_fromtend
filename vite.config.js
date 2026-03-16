@@ -8,13 +8,13 @@ export default defineConfig({
     proxy: {
       // Redirige /api/* → Laravel (ajustez le port si besoin)
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://shocked-sharla-freelence-c2692768.koyeb.app/',
         changeOrigin: true,
         secure: false,
       },
       // Redirige /storage/* → fichiers publics Laravel
       '/storage': {
-        target: 'http://localhost:8000',
+        target: 'https://shocked-sharla-freelence-c2692768.koyeb.app/',
         changeOrigin: true,
         secure: false,
       },
