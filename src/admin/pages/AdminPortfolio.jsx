@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useApi } from '../hooks/useApi'
 import { AdminPage, PageHeader, Card, Btn, Badge, Toggle, Modal, ConfirmDialog, Spinner, Input, Textarea, FileInput, TableHead, TableRow, Td, Toast } from '../components/AdminUI'
-import { Plus, Pencil, Trash2, Image as ImageIcon } from 'lucide-react'
+import { Plus, Pencil, Trash2, Image as ImageIcon, Upload } from 'lucide-react'
 
 const EMPTY = {
   title: '', client: '', category: '', short_description: '', content: '',
@@ -11,20 +11,21 @@ const EMPTY = {
 
 export default function AdminPortfolio() {
   const { get, post, del } = useApi()
-  const [items, setItems]             = useState([])
-  const [categories, setCategories]   = useState([])
-  const [loading, setLoading]         = useState(true)
-  const [modal, setModal]             = useState(false)
-  const [editing, setEditing]         = useState(null)
-  const [form, setForm]               = useState(EMPTY)
-  const [coverFile, setCoverFile]     = useState(null)
-  const [logoFile, setLogoFile]       = useState(null)
-  const [coverPrev, setCoverPrev]     = useState(null)
-  const [logoPrev, setLogoPrev]       = useState(null)
+  const [items, setItems]               = useState([])
+  const [categories, setCategories]     = useState([])
+  const [loading, setLoading]           = useState(true)
+  const [modal, setModal]               = useState(false)
+  const [editing, setEditing]           = useState(null)
+  const [form, setForm]                 = useState(EMPTY)
+  const [coverFile, setCoverFile]       = useState(null)
+  const [logoFile, setLogoFile]         = useState(null)
+  const [coverPrev, setCoverPrev]       = useState(null)
+  const [logoPrev, setLogoPrev]         = useState(null)
   const [galleryFiles, setGalleryFiles] = useState([])
-  const [saving, setSaving]           = useState(false)
-  const [confirm, setConfirm]         = useState(null)
-  const [toast, setToast]             = useState(null)
+  const [saving, setSaving]             = useState(false)
+  const [uploadingGallery, setUploadingGallery] = useState(false)
+  const [confirm, setConfirm]           = useState(null)
+  const [toast, setToast]               = useState(null)
   const [galleryModal, setGalleryModal] = useState(null)
 
   const load = () => {
@@ -95,9 +96,12 @@ export default function AdminPortfolio() {
       fd.append('is_featured', form.is_featured ? '1' : '0')
       if (coverFile) fd.append('cover_image', coverFile)
       if (logoFile)  fd.append('client_logo', logoFile)
+
+      // Galerie à la création uniquement (multi-upload direct)
       if (!editing && galleryFiles.length > 0) {
         galleryFiles.forEach(file => fd.append('gallery[]', file))
       }
+
       let res
       if (editing) {
         fd.append('_method', 'PUT')
@@ -106,10 +110,23 @@ export default function AdminPortfolio() {
         res = await post('/admin/portfolio', fd)
       }
       if (!res.success) throw new Error(res.message || 'Une erreur est survenue')
+
+      // En édition : upload des images galerie une par une via /images
+      if (editing && galleryFiles.length > 0) {
+        setUploadingGallery(true)
+        for (const file of galleryFiles) {
+          const imgFd = new FormData()
+          imgFd.append('image', file)
+          await post(`/admin/portfolio/${editing.id}/images`, imgFd)
+        }
+        setUploadingGallery(false)
+      }
+
       showToast(editing ? 'Réalisation mise à jour avec succès.' : 'Réalisation créée avec succès.')
       setModal(false)
       load()
     } catch(e) {
+      setUploadingGallery(false)
       showToast(e.message || "Erreur lors de l'enregistrement", 'error')
     } finally {
       setSaving(false)
@@ -131,7 +148,12 @@ export default function AdminPortfolio() {
     if (!window.confirm('Voulez-vous vraiment supprimer cette image ?')) return
     try {
       const res = await del(`/admin/portfolio/images/${imgId}`)
-      if (res.success) { showToast('Image supprimée avec succès.'); load() }
+      if (res.success) {
+        showToast('Image supprimée avec succès.')
+        // Rafraîchir le galleryModal en mettant à jour l'item concerné
+        load()
+        setGalleryModal(prev => prev ? { ...prev, images: prev.images.filter(i => i.id !== imgId) } : null)
+      }
     } catch (e) {
       showToast('Erreur lors de la suppression', 'error')
     }
@@ -172,6 +194,7 @@ export default function AdminPortfolio() {
     return <Badge color="green">Actif</Badge>
   }
 
+  // ── Styles ───────────────────────────────────────────────────
   const selectStyle = {
     width: '100%',
     padding: '0.5rem 0.75rem',
@@ -325,22 +348,22 @@ export default function AdminPortfolio() {
             <FileInput label="Logo client (optionnel)"      accept="image/*" preview={logoPrev}  onChange={handleLogoChange} />
           </div>
 
-          {!editing && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>
-                Galerie (optionnel — création uniquement)
-              </label>
-              <input
-                type="file" accept="image/*" multiple onChange={handleGalleryChange}
-                style={{ color: 'var(--text-2)', fontSize: '0.82rem', padding: '0.4rem 0' }}
-              />
-              {galleryFiles.length > 0 && (
-                <p style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 500 }}>
-                  {galleryFiles.length} image(s) sélectionnée(s)
-                </p>
-              )}
-            </div>
-          )}
+          {/* ── Galerie : disponible à la création ET en édition ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>
+              {editing ? 'Ajouter des images à la galerie (optionnel)' : 'Galerie (optionnel)'}
+            </label>
+            <input
+              type="file" accept="image/*" multiple onChange={handleGalleryChange}
+              style={{ color: 'var(--text-2)', fontSize: '0.82rem', padding: '0.4rem 0' }}
+            />
+            {galleryFiles.length > 0 && (
+              <p style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 500 }}>
+                {galleryFiles.length} image(s) sélectionnée(s)
+                {uploadingGallery && ' — upload en cours…'}
+              </p>
+            )}
+          </div>
 
           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '0.75rem', background: '#f8fafc', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
             <Toggle label="Actif"        checked={form.is_active}       onChange={v => setForm(p => ({...p, is_active: v}))} />
@@ -350,7 +373,9 @@ export default function AdminPortfolio() {
 
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', paddingTop: '0.5rem', borderTop: '1px solid var(--border)' }}>
             <Btn variant="ghost" onClick={handleCloseModal}>Annuler</Btn>
-            <Btn onClick={handleSave} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</Btn>
+            <Btn onClick={handleSave} disabled={saving || uploadingGallery}>
+              {uploadingGallery ? 'Upload galerie…' : saving ? 'Enregistrement…' : 'Enregistrer'}
+            </Btn>
           </div>
         </div>
       </Modal>
@@ -380,7 +405,7 @@ export default function AdminPortfolio() {
           </p>
         )}
         <p style={{ color: 'var(--text-3)', fontSize: '0.78rem', marginTop: '1rem' }}>
-          Pour ajouter des images, éditez la réalisation et utilisez le champ galerie (uniquement à la création).
+          Pour ajouter des images, éditez la réalisation et utilisez le champ galerie.
         </p>
       </Modal>
 
