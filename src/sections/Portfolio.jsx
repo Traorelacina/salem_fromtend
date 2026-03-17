@@ -92,7 +92,8 @@ const ProjectCard = ({ project, color }) => {
             {project.short_description}
           </p>
           {link && (
-            
+            // ✅ Correction : balise <a> correctement formatée
+            <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
