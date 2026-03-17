@@ -4,7 +4,7 @@ import { useApi } from '../hooks/useApi'
 import { useAuth } from '../context/AuthContext'
 import { AdminPage, PageHeader, Card, StatCard, Badge, Btn, Spinner, TableHead, TableRow, Td, Toast } from '../components/AdminUI'
 import {
-  MessageSquare, Bell, Settings, Briefcase, Newspaper,
+  MessageSquare, Bell, Briefcase, Newspaper,
   Users, Layers, ArrowRight, TrendingUp, Clock, CheckCircle2,
   Plus,
 } from 'lucide-react'
@@ -21,14 +21,12 @@ export default function AdminDashboard() {
     Promise.all([
       get('/admin/contacts/stats'),
       get('/admin/contacts?per_page=6'),
-      get('/admin/services'),
       get('/admin/portfolio'),
       get('/admin/news?per_page=1'),
       get('/admin/clients'),
-    ]).then(([cStats, cList, svcs, port, news, clients]) => {
+    ]).then(([cStats, cList, port, news, clients]) => {
       setStats({
         contacts: cStats.data,
-        services: svcs.data?.length ?? 0,
         portfolio: port.data?.length ?? 0,
         news: news.meta?.total ?? 0,
         clients: clients.data?.length ?? 0,
@@ -47,8 +45,8 @@ export default function AdminDashboard() {
     archived: <Badge color="gray">Archivé</Badge>,
   }
 
+  // ✅ Actions rapides sans "Nouveau service"
   const quickActions = [
-    { label: 'Nouveau service',      to: '/admin/services',  Icon: Settings,  color: 'green' },
     { label: 'Nouvelle solution',    to: '/admin/solutions', Icon: Layers,    color: 'blue' },
     { label: 'Nouvelle réalisation', to: '/admin/portfolio', Icon: Briefcase, color: 'purple' },
     { label: 'Nouvel article',       to: '/admin/news',      Icon: Newspaper, color: 'orange' },
@@ -63,12 +61,12 @@ export default function AdminDashboard() {
 
       {loading ? <Spinner /> : (
         <>
-          {/* Stat cards */}
+          {/* Stat cards - ✅ sans "Services" */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '1rem', marginBottom: '1.75rem' }}>
             <StatCard icon={MessageSquare} label="Total messages"  value={stats?.contacts?.total ?? 0} color="blue" />
             <StatCard icon={Bell}          label="Non lus"          value={stats?.contacts?.new ?? 0}   color="orange" trend="À traiter" />
-            <StatCard icon={Settings}      label="Services"         value={stats?.services ?? 0}         color="green" />
             <StatCard icon={Briefcase}     label="Réalisations"     value={stats?.portfolio ?? 0}        color="purple" />
+            <StatCard icon={Newspaper}     label="Articles"         value={stats?.news ?? 0}             color="green" />
             <StatCard icon={Users}         label="Clients"          value={stats?.clients ?? 0}          color="green" />
           </div>
 
@@ -117,7 +115,7 @@ export default function AdminDashboard() {
 
             {/* Right column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {/* Quick actions */}
+              {/* Quick actions - ✅ sans "Nouveau service" */}
               <Card style={{ padding: '1.25rem' }}>
                 <h3 style={{ fontWeight: 700, fontSize: '0.92rem', color: 'rgba(226,240,253,0.9)', fontFamily: "'Lexend', sans-serif", marginBottom: '1rem' }}>Actions rapides</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
