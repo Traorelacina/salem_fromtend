@@ -12,7 +12,7 @@ export function injectAdminCSS() {
   s.textContent = `
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@700;800&display=swap');
     :root {
-      --bg:          #f0f2f5;
+      --bg:          #eef0f4;
       --bg-card:     #ffffff;
       --bg-green-lt: #e8f3e9;
       --sidebar:     #0a1f0e;
@@ -21,9 +21,9 @@ export function injectAdminCSS() {
       --primary-dk:  #15803d;
       --primary-lt:  #dcfce7;
       --accent:      #22c55e;
-      --text:        #1e293b;
-      --text-2:      #475569;
-      --text-3:      #64748b;
+      --text:        #0f172a;
+      --text-2:      #334155;
+      --text-3:      #4b5563;
       --border:      #dee2e9;
       --border-2:    #bbf7d0;
       --danger:      #dc2626;
@@ -71,7 +71,7 @@ export function PageHeader({ title, subtitle, action }) {
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
       <div>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text)', fontFamily: "'Lexend', sans-serif", letterSpacing: '-0.02em' }}>{title}</h1>
-        {subtitle && <p style={{ marginTop: '0.25rem', color: 'var(--text-2)', fontSize: '0.83rem', fontWeight: 400 }}>{subtitle}</p>}
+        {subtitle && <p style={{ marginTop: '0.25rem', color: 'var(--text-2)', fontSize: '0.83rem', fontWeight: 500 }}>{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -115,7 +115,7 @@ export function Badge({ children, color = 'green' }) {
     red:    ['#fef2f2','#dc2626','#fecaca'],
     orange: ['#fff7ed','#c2410c','#fed7aa'],
     blue:   ['#eff6ff','#1d4ed8','#bfdbfe'],
-    gray:   ['#f1f5f9','#475569','#d1d9e6'],
+    gray:   ['#f1f5f9','#334155','#c8d0dc'],
     purple: ['#faf5ff','#7e22ce','#e9d5ff'],
   }
   const [bg, tc, bc] = m[color] || m.gray
@@ -130,7 +130,7 @@ export function Badge({ children, color = 'green' }) {
 export function Input({ label, error, ...props }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-      {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
+      {label && <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <input {...props} style={{ padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, background: '#ffffff', color: 'var(--text)', fontSize: '0.85rem', outline: 'none', width: '100%', transition: 'border-color 0.15s, box-shadow 0.15s', ...props.style }}
         onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)' }}
         onBlur={e  => { e.target.style.borderColor = error ? 'var(--danger)' : 'var(--border)'; e.target.style.boxShadow = 'none' }} />
@@ -143,7 +143,7 @@ export function Input({ label, error, ...props }) {
 export function Textarea({ label, ...props }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-      {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
+      {label && <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <textarea {...props} style={{ padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--border)', background: '#ffffff', color: 'var(--text)', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '100px', width: '100%', transition: 'border-color 0.15s, box-shadow 0.15s', ...props.style }}
         onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)' }}
         onBlur={e  => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none' }} />
@@ -155,7 +155,7 @@ export function Textarea({ label, ...props }) {
 export function Select({ label, children, ...props }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-      {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
+      {label && <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <select {...props} style={{ padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--border)', background: '#ffffff', color: 'var(--text)', fontSize: '0.85rem', outline: 'none', cursor: 'pointer', width: '100%', ...props.style }}>
         {children}
       </select>
@@ -179,7 +179,7 @@ export function Toggle({ label, checked, onChange }) {
 export function FileInput({ label, accept, onChange, preview }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-      {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
+      {label && <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <label style={{ border: '2px dashed var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', background: '#fafafa', cursor: 'pointer', display: 'block', transition: 'border-color 0.15s, background 0.15s' }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.background = '#f0fdf4' }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = '#fafafa' }}>
@@ -266,7 +266,7 @@ export function StatCard({ icon: Icon, label, value, trend, color = 'green' }) {
         </div>
       </div>
       <div style={{ fontSize: '2.1rem', fontWeight: 800, color: 'var(--text)', fontFamily: "'Lexend', sans-serif", lineHeight: 1 }}>{value}</div>
-      {trend && <div style={{ fontSize: '0.72rem', color: 'var(--text-3)' }}>{trend}</div>}
+      {trend && <div style={{ fontSize: '0.72rem', fontWeight: 500, color: 'var(--text-2)' }}>{trend}</div>}
     </div>
   )
 }
