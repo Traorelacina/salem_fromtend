@@ -62,33 +62,31 @@ export default function NewsDetail() {
     }
   }
 
-  // ✅ Fonction de formatage de date sécurisée
+  // ✅ Fonction de formatage de date simplifiée (comme dans News.jsx)
   const formatDate = (dateStr) => {
-    if (!dateStr) return 'Date non disponible'
+    if (!dateStr) return ''
     
     try {
-      const date = new Date(dateStr)
-      // Vérifier si la date est valide
-      if (isNaN(date.getTime())) {
-        return 'Date non disponible'
+      // Si c'est au format YYYY-MM-DD (ex: 2024-03-20)
+      if (typeof dateStr === 'string' && dateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [year, month, day] = dateStr.split(' ')[0].split('-')
+        return `${day}/${month}/${year}`
       }
       
-      return date.toLocaleDateString('fr-FR', {
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric'
-      })
+      // Pour les autres formats, on retourne la chaîne brute
+      return dateStr
     } catch (e) {
-      return 'Date non disponible'
+      return dateStr
     }
   }
 
   // ✅ Fonction pour calculer le temps de lecture
   const getReadingTime = (content) => {
     if (!content) return '1 min'
-    const wordsPerMinute = 200
-    const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
-    const minutes = Math.ceil(wordCount / wordsPerMinute)
+    // Enlever les balises HTML et compter les mots
+    const text = content.replace(/<[^>]*>/g, '')
+    const wordCount = text.split(/\s+/).length
+    const minutes = Math.ceil(wordCount / 200) // 200 mots par minute
     return `${minutes} min de lecture`
   }
 
@@ -101,7 +99,6 @@ export default function NewsDetail() {
       })
     } else {
       navigator.clipboard.writeText(window.location.href)
-      // Ici on pourrait afficher un toast
       alert('Lien copié dans le presse-papier')
     }
   }
@@ -180,7 +177,7 @@ export default function NewsDetail() {
                 {article.title}
               </h1>
               
-              {/* Métadonnées - avec vérifications */}
+              {/* Métadonnées - format simplifié comme dans News.jsx */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-200">
                 {article.author && (
                   <span className="flex items-center gap-1.5">
@@ -188,7 +185,7 @@ export default function NewsDetail() {
                   </span>
                 )}
                 
-                {/* ✅ Date sécurisée */}
+                {/* ✅ Affichage direct de la date comme dans News.jsx */}
                 {article.published_at && (
                   <span className="flex items-center gap-1.5">
                     <Calendar size={16} /> {formatDate(article.published_at)}
@@ -268,7 +265,7 @@ export default function NewsDetail() {
                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                   <h3 className="font-semibold text-gray-800 mb-4">À propos de l'article</h3>
                   <div className="space-y-3 text-sm">
-                    {/* ✅ Date sécurisée dans la sidebar */}
+                    {/* ✅ Affichage direct de la date comme dans News.jsx */}
                     {article.published_at ? (
                       <div className="flex items-center gap-3 text-gray-600">
                         <Calendar size={16} className="text-primary" />
@@ -330,7 +327,7 @@ export default function NewsDetail() {
                                 {rel.title}
                               </h4>
                               <p className="text-xs text-gray-400 mt-1">
-                                {rel.published_at ? formatDate(rel.published_at) : 'Date inconnue'}
+                                {rel.published_at ? formatDate(rel.published_at) : ''}
                               </p>
                             </div>
                           </div>
