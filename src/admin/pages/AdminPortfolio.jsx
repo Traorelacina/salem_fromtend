@@ -3,51 +3,49 @@ import { useApi } from '../hooks/useApi'
 import { AdminPage, PageHeader, Card, Btn, Badge, Toggle, Modal, ConfirmDialog, Spinner, Input, Textarea, FileInput, TableHead, TableRow, Td, Toast } from '../components/AdminUI'
 import { Plus, Pencil, Trash2, Image as ImageIcon } from 'lucide-react'
 
-const EMPTY = { 
-  title: '', 
-  client: '', 
-  category: '', 
-  short_description: '', 
-  content: '', 
-  external_link: '', 
-  android_link: '', 
-  ios_link: '', 
-  is_confidential: false, 
-  is_active: true, 
-  is_featured: false, 
-  order: 0 
+const EMPTY = {
+  title: '', client: '', category: '', short_description: '', content: '',
+  external_link: '', android_link: '', ios_link: '',
+  is_confidential: false, is_active: true, is_featured: false, order: 0
 }
 
 export default function AdminPortfolio() {
-  const { get, post, put, del } = useApi()
-  const [items, setItems] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [modal, setModal] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState(EMPTY)
-  const [coverFile, setCoverFile] = useState(null)
-  const [logoFile, setLogoFile] = useState(null)
-  const [coverPrev, setCoverPrev] = useState(null)
-  const [logoPrev, setLogoPrev] = useState(null)
+  const { get, post, del } = useApi()
+  const [items, setItems]             = useState([])
+  const [categories, setCategories]   = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [modal, setModal]             = useState(false)
+  const [editing, setEditing]         = useState(null)
+  const [form, setForm]               = useState(EMPTY)
+  const [coverFile, setCoverFile]     = useState(null)
+  const [logoFile, setLogoFile]       = useState(null)
+  const [coverPrev, setCoverPrev]     = useState(null)
+  const [logoPrev, setLogoPrev]       = useState(null)
   const [galleryFiles, setGalleryFiles] = useState([])
-  const [saving, setSaving] = useState(false)
-  const [confirm, setConfirm] = useState(null)
-  const [toast, setToast] = useState(null)
+  const [saving, setSaving]           = useState(false)
+  const [confirm, setConfirm]         = useState(null)
+  const [toast, setToast]             = useState(null)
   const [galleryModal, setGalleryModal] = useState(null)
 
-  const load = () => { 
+  const load = () => {
     setLoading(true)
     get('/admin/portfolio')
       .then(d => setItems(d.data ?? []))
       .catch(() => showToast('Erreur lors du chargement', 'error'))
-      .finally(() => setLoading(false)) 
+      .finally(() => setLoading(false))
   }
-  
-  useEffect(load, [])
 
-  const showToast = (msg, type = 'success') => { 
+  const loadCategories = () => {
+    get('/admin/portfolio-categories')
+      .then(d => setCategories(d.data ?? []))
+      .catch(() => {})
+  }
+
+  useEffect(() => { load(); loadCategories() }, [])
+
+  const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
-    setTimeout(() => setToast(null), 3000) 
+    setTimeout(() => setToast(null), 3000)
   }
 
   const openCreate = () => {
@@ -58,22 +56,15 @@ export default function AdminPortfolio() {
     setGalleryFiles([])
     setModal(true)
   }
-  
+
   const openEdit = (item) => {
     setEditing(item)
-    setForm({ 
-      title: item.title, 
-      client: item.client, 
-      category: item.category, 
-      short_description: item.short_description, 
-      content: item.content, 
-      external_link: item.external_link ?? '', 
-      android_link: item.android_link ?? '', 
-      ios_link: item.ios_link ?? '', 
-      is_confidential: item.is_confidential, 
-      is_active: item.is_active, 
-      is_featured: item.is_featured, 
-      order: item.order 
+    setForm({
+      title: item.title, client: item.client, category: item.category,
+      short_description: item.short_description, content: item.content,
+      external_link: item.external_link ?? '', android_link: item.android_link ?? '',
+      ios_link: item.ios_link ?? '', is_confidential: item.is_confidential,
+      is_active: item.is_active, is_featured: item.is_featured, order: item.order
     })
     setCoverPrev(item.cover_url ?? null)
     setLogoPrev(item.client_logo_url ?? null)
@@ -90,11 +81,11 @@ export default function AdminPortfolio() {
     setSaving(true)
     try {
       const fd = new FormData()
-      fd.append('title', form.title || '')
-      fd.append('client', form.client || '')
-      fd.append('category', form.category || '')
-      fd.append('short_description', form.short_description || '')
-      fd.append('content', form.content || '')
+      fd.append('title', form.title)
+      fd.append('client', form.client)
+      fd.append('category', form.category)
+      fd.append('short_description', form.short_description)
+      fd.append('content', form.content)
       fd.append('external_link', form.external_link || '')
       fd.append('android_link', form.android_link || '')
       fd.append('ios_link', form.ios_link || '')
@@ -118,21 +109,18 @@ export default function AdminPortfolio() {
       showToast(editing ? 'Réalisation mise à jour avec succès.' : 'Réalisation créée avec succès.')
       setModal(false)
       load()
-    } catch(e) { 
+    } catch(e) {
       showToast(e.message || "Erreur lors de l'enregistrement", 'error')
-    } finally { 
-      setSaving(false) 
+    } finally {
+      setSaving(false)
     }
   }
 
   const handleDelete = async (id) => {
     try {
       const res = await del(`/admin/portfolio/${id}`)
-      if (res.success) {
-        showToast('Réalisation supprimée avec succès.')
-      } else {
-        showToast(res.message || 'Erreur lors de la suppression', 'error')
-      }
+      if (res.success) showToast('Réalisation supprimée avec succès.')
+      else showToast(res.message || 'Erreur lors de la suppression', 'error')
       load()
     } catch (e) {
       showToast('Erreur lors de la suppression', 'error')
@@ -152,22 +140,22 @@ export default function AdminPortfolio() {
   const handleCoverChange = (e) => {
     const file = e.target.files[0]
     setCoverFile(file)
-    if (coverPrev && coverPrev.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
+    if (coverPrev?.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
     setCoverPrev(file ? URL.createObjectURL(file) : null)
   }
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0]
     setLogoFile(file)
-    if (logoPrev && logoPrev.startsWith('blob:')) URL.revokeObjectURL(logoPrev)
+    if (logoPrev?.startsWith('blob:')) URL.revokeObjectURL(logoPrev)
     setLogoPrev(file ? URL.createObjectURL(file) : null)
   }
 
   const handleGalleryChange = (e) => setGalleryFiles([...e.target.files])
 
   const handleCloseModal = () => {
-    if (coverPrev && coverPrev.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
-    if (logoPrev  && logoPrev.startsWith('blob:'))  URL.revokeObjectURL(logoPrev)
+    if (coverPrev?.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
+    if (logoPrev?.startsWith('blob:'))  URL.revokeObjectURL(logoPrev)
     setModal(false)
     setCoverPrev(null); setLogoPrev(null)
     setCoverFile(null); setLogoFile(null)
@@ -184,16 +172,29 @@ export default function AdminPortfolio() {
     return <Badge color="green">Actif</Badge>
   }
 
+  const selectStyle = {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-sm)',
+    fontSize: '0.83rem',
+    color: form.category ? 'var(--text)' : 'var(--text-3)',
+    background: 'var(--surface)',
+    outline: 'none',
+    cursor: 'pointer',
+    height: '36px',
+  }
+
   return (
     <AdminPage>
-      <PageHeader 
-        title="Réalisations" 
-        subtitle={`${items.length} projet(s)`} 
+      <PageHeader
+        title="Réalisations"
+        subtitle={`${items.length} projet(s)`}
         action={
           <Btn onClick={openCreate}>
             <Plus size={15} /> Nouvelle réalisation
           </Btn>
-        } 
+        }
       />
 
       {loading ? (
@@ -210,9 +211,8 @@ export default function AdminPortfolio() {
                   <Td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       {item.cover_url ? (
-                        <img 
-                          src={item.cover_url} alt=""
-                          style={{ width: '44px', height: '32px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0, border: '1px solid var(--border)' }} 
+                        <img src={item.cover_url} alt=""
+                          style={{ width: '44px', height: '32px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0, border: '1px solid var(--border)' }}
                         />
                       ) : (
                         <div style={{ width: '44px', height: '32px', borderRadius: '6px', background: '#f1f5f9', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -279,11 +279,11 @@ export default function AdminPortfolio() {
         </Card>
       )}
 
-      {/* ── Formulaire modal ───────────────────────────────── */}
-      <Modal 
-        open={modal} 
-        onClose={handleCloseModal} 
-        title={editing ? 'Modifier la réalisation' : 'Nouvelle réalisation'} 
+      {/* ── Formulaire modal ─────────────────────────────── */}
+      <Modal
+        open={modal}
+        onClose={handleCloseModal}
+        title={editing ? 'Modifier la réalisation' : 'Nouvelle réalisation'}
         width="680px"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -291,8 +291,20 @@ export default function AdminPortfolio() {
           <Input label="Titre *" value={form.title} onChange={f('title')} placeholder="Ex : Application Mobile E-commerce" />
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <Input label="Client *"    value={form.client}   onChange={f('client')}   placeholder="Nom du client" />
-            <Input label="Catégorie *" value={form.category} onChange={f('category')} placeholder="Web, Mobile, Logiciel…" />
+            <Input label="Client *" value={form.client} onChange={f('client')} placeholder="Nom du client" />
+
+            {/* ── Select catégorie dynamique ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>
+                Catégorie *
+              </label>
+              <select value={form.category} onChange={f('category')} style={selectStyle}>
+                <option value="" disabled>Sélectionner une catégorie</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -318,9 +330,9 @@ export default function AdminPortfolio() {
               <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>
                 Galerie (optionnel — création uniquement)
               </label>
-              <input 
+              <input
                 type="file" accept="image/*" multiple onChange={handleGalleryChange}
-                style={{ color: 'var(--text-2)', fontSize: '0.82rem', padding: '0.4rem 0' }} 
+                style={{ color: 'var(--text-2)', fontSize: '0.82rem', padding: '0.4rem 0' }}
               />
               {galleryFiles.length > 0 && (
                 <p style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 500 }}>
@@ -343,11 +355,11 @@ export default function AdminPortfolio() {
         </div>
       </Modal>
 
-      {/* ── Galerie modal ──────────────────────────────────── */}
-      <Modal 
-        open={!!galleryModal} 
-        onClose={() => setGalleryModal(null)} 
-        title={`Galerie — ${galleryModal?.title}`} 
+      {/* ── Galerie modal ────────────────────────────────── */}
+      <Modal
+        open={!!galleryModal}
+        onClose={() => setGalleryModal(null)}
+        title={`Galerie — ${galleryModal?.title}`}
         width="620px"
       >
         {galleryModal?.images?.length > 0 ? (
@@ -355,7 +367,7 @@ export default function AdminPortfolio() {
             {galleryModal.images.map(img => (
               <div key={img.id} style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                 <img src={img.url} alt={img.caption || ''} style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }} />
-                <button 
+                <button
                   onClick={() => handleDeleteImage(img.id)}
                   style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(220,38,38,0.85)', border: 'none', borderRadius: '50%', width: '22px', height: '22px', color: 'white', cursor: 'pointer', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >×</button>
@@ -372,12 +384,12 @@ export default function AdminPortfolio() {
         </p>
       </Modal>
 
-      <ConfirmDialog 
-        open={!!confirm} 
-        onClose={() => setConfirm(null)} 
+      <ConfirmDialog
+        open={!!confirm}
+        onClose={() => setConfirm(null)}
         onConfirm={() => handleDelete(confirm)}
-        title="Supprimer la réalisation" 
-        message="Toutes les images de la galerie seront également supprimées." 
+        title="Supprimer la réalisation"
+        message="Toutes les images de la galerie seront également supprimées."
       />
 
       <Toast toast={toast} />
