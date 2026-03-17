@@ -1,299 +1,370 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, User, Tag, Loader } from 'lucide-react'
+import { Calendar, User, Tag, ArrowLeft, Share2, Clock, Loader } from 'lucide-react'
+import Header from '../components/Header'
 import Container from '../components/Container'
-import PageHero from '../components/Pagehero'
 import { fadeUp } from '../animations/fadeAnimations'
 
 const API = import.meta.env.VITE_API_URL ?? '/api'
 
-const COLORS = ['#0D6EFD', '#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#059669']
-function colorFor(str = '') {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  return COLORS[Math.abs(hash) % COLORS.length]
-}
-
-/* ─── Skeleton ─── */
-const Skeleton = () => (
-  <div className="animate-pulse">
-    <div className="w-full h-screen bg-gray-200" />
-    <div className="py-16">
-      <Container>
-        <div className="max-w-3xl mx-auto space-y-4">
-          {[100, 80, 90, 70, 85, 75].map((w, i) => (
-            <div key={i} style={{ height: 16, background: '#e5e7eb', borderRadius: 8, width: `${w}%` }} />
-          ))}
-        </div>
-      </Container>
-    </div>
-  </div>
-)
-
-const NewsDetail = () => {
+export default function NewsDetail() {
   const { slug } = useParams()
   const navigate = useNavigate()
   const [article, setArticle] = useState(null)
+  const [related, setRelated] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    setLoading(true)
-    fetch(`${API}/v1/news/${slug}`, { headers: { Accept: 'application/json' } })
-      .then(r => r.json())
-      .then(data => { if (data.success) setArticle(data.data) })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+    loadArticle()
+    window.scrollTo(0, 0)
   }, [slug])
 
-  if (loading) return <Skeleton />
+  const loadArticle = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`${API}/v1/news/${slug}`, {
+        headers: { Accept: 'application/json' }
+      })
+      const data = await res.json()
+      
+      if (data.success) {
+        setArticle(data.data)
+        // Charger les articles similaires si disponibles
+        if (data.data.category) {
+          loadRelated(data.data.category, data.data.id)
+        }
+      } else {
+        setError("Article non trouvé")
+      }
+    } catch (err) {
+      setError("Erreur lors du chargement de l'article")
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  if (!article) return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, textAlign: 'center', padding: '0 1rem' }}>
-      <Tag size={48} style={{ color: '#d1d5db' }} />
-      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0b0f2a', margin: 0 }}>Article introuvable</h2>
-      <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Cet article n'existe pas ou a été supprimé.</p>
-      <button
-        onClick={() => navigate('/news')}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.875rem', fontWeight: 600, color: '#4fc3f7', background: 'none', border: 'none', cursor: 'pointer' }}
-      >
-        <ArrowLeft size={15} /> Retour aux actualités
-      </button>
-    </div>
-  )
+  const loadRelated = async (category, currentId) => {
+    try {
+      const res = await fetch(`${API}/v1/news?per_page=3&category=${category}`, {
+        headers: { Accept: 'application/json' }
+      })
+      const data = await res.json()
+      if (data.success) {
+        // Filtrer l'article courant
+        const filtered = (data.data ?? []).filter(a => a.id !== currentId)
+        setRelated(filtered)
+      }
+    } catch (err) {
+      console.error('Erreur chargement articles similaires:', err)
+    }
+  }
 
-  const color = colorFor(article.category ?? article.title)
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    return new Date(dateStr).toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    })
+  }
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: article.title,
+        text: article.excerpt,
+        url: window.location.href,
+      })
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+      // Ici on pourrait afficher un toast
+      alert('Lien copié dans le presse-papier')
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <Loader size={40} className="animate-spin text-primary mx-auto mb-4" />
+            <p className="text-gray-400">Chargement de l'article...</p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  if (error || !article) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center max-w-md mx-auto px-4">
+            <div className="text-6xl mb-4">📄</div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Article non trouvé</h1>
+            <p className="text-gray-500 mb-6">{error || "L'article que vous recherchez n'existe pas ou a été déplacé."}</p>
+            <button
+              onClick={() => navigate('/news')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition"
+            >
+              <ArrowLeft size={18} /> Retour aux articles
+            </button>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
-        .news-prose { font-family: 'DM Sans', sans-serif; color: #374151; line-height: 1.85; font-size: 1rem; }
-        .news-prose h1, .news-prose h2, .news-prose h3, .news-prose h4 {
-          font-family: 'Syne', sans-serif; font-weight: 800;
-          color: #0b0f2a; margin: 2rem 0 0.75rem; line-height: 1.2;
-        }
-        .news-prose h2 { font-size: 1.5rem; }
-        .news-prose h3 { font-size: 1.2rem; }
-        .news-prose p  { margin: 0 0 1.25rem; }
-        .news-prose ul, .news-prose ol { padding-left: 1.5rem; margin: 0 0 1.25rem; }
-        .news-prose li { margin-bottom: 0.4rem; }
-        .news-prose a  { color: #4fc3f7; text-decoration: underline; }
-        .news-prose strong { color: #0b0f2a; font-weight: 700; }
-        .news-prose blockquote {
-          border-left: 4px solid #4fc3f7;
-          margin: 1.5rem 0; padding: 0.75rem 1.25rem;
-          background: #f0f9ff; border-radius: 0 8px 8px 0;
-          color: #0b0f2a; font-style: italic;
-        }
-        .news-prose img { width: 100%; border-radius: 12px; margin: 1.5rem 0; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
-        .news-prose pre {
-          background: #0b0f2a; color: #e2e8f0;
-          padding: 1.25rem; border-radius: 10px;
-          overflow-x: auto; font-size: 0.875rem; margin: 1.25rem 0;
-        }
-        .news-prose code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.875rem; }
-        .news-prose pre code { background: transparent; padding: 0; }
-      `}</style>
-
-      {/* ══ HERO ══ */}
-      <section style={{
-        background: 'linear-gradient(180deg, #0b0f2a 0%, #0e1535 65%, #111827 100%)',
-        paddingTop: '7rem',
-        fontFamily: "'DM Sans', sans-serif",
-      }}>
-        {/* Glow */}
-        <div style={{
-          position: 'absolute', top: '8%', left: '50%', transform: 'translateX(-50%)',
-          width: 600, height: 300, pointerEvents: 'none',
-          background: `radial-gradient(circle, ${color}15, transparent 70%)`,
-          filter: 'blur(80px)',
-        }} />
-
-        <Container>
-          <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center', padding: '3rem 1rem 2.5rem', position: 'relative', zIndex: 1 }}>
-
-            {/* Breadcrumb */}
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '1.5rem' }}>
-              <button
-                onClick={() => navigate('/news')}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  color: 'rgba(186,230,253,0.45)', fontSize: '0.75rem', fontWeight: 500,
-                  background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s',
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = 'rgba(186,230,253,0.85)'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(186,230,253,0.45)'}
-              >
-                <ArrowLeft size={13} /> Actualités
-              </button>
-            </motion.div>
-
-            {/* Badge catégorie */}
-            {article.category && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ marginBottom: '1.25rem' }}>
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
-                  padding: '4px 14px', borderRadius: 9999,
-                  background: 'rgba(79,195,247,0.08)', color: '#4fc3f7',
-                  border: '1px solid rgba(79,195,247,0.28)',
-                }}>
-                  <Tag size={10} />
-                  {article.category}
-                </span>
-              </motion.div>
-            )}
-
-            {/* Titre */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-              style={{
-                fontFamily: "'Syne', sans-serif", fontWeight: 800,
-                fontSize: 'clamp(1.6rem, 4vw, 2.6rem)',
-                color: '#fff', lineHeight: 1.15, margin: '0 0 1.25rem',
-              }}
-            >
-              {article.title}
-            </motion.h1>
-
-            {/* Excerpt */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              style={{
-                fontSize: '0.95rem', lineHeight: 1.8,
-                color: 'rgba(186,230,253,0.58)',
-                margin: '0 auto 1.75rem', maxWidth: 580,
-              }}
-            >
-              {article.excerpt}
-            </motion.p>
-
-            {/* Meta row */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1.25rem' }}
-            >
-              {article.author && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: 'rgba(186,230,253,0.45)' }}>
-                  <User size={13} style={{ color: '#4fc3f7' }} />
-                  {article.author}
-                </span>
-              )}
-              {article.published_at && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: 'rgba(186,230,253,0.45)' }}>
-                  <Calendar size={13} style={{ color: '#4fc3f7' }} />
-                  {article.published_at}
-                </span>
-              )}
-            </motion.div>
-          </div>
-        </Container>
-
-        {/* Image cover */}
-        {article.cover_url && (
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{ width: '100%', maxWidth: 900, margin: '0 auto', padding: '0 2rem' }}
-          >
-            <div style={{
-              borderRadius: '16px 16px 0 0', overflow: 'hidden',
-              boxShadow: '0 -12px 60px rgba(0,0,0,0.45)',
-              border: '1px solid rgba(255,255,255,0.07)', borderBottom: 'none',
-            }}>
-              <img
-                src={article.cover_url}
-                alt={article.title}
-                style={{ width: '100%', display: 'block', maxHeight: 460, objectFit: 'cover', objectPosition: 'center' }}
-              />
-            </div>
-          </motion.div>
-        )}
-
-        {/* Séparateur si pas d'image */}
-        {!article.cover_url && (
-          <div style={{ width: '100%', maxWidth: 900, margin: '0 auto', padding: '0 2rem' }}>
-            <div style={{
-              height: 60, borderRadius: '16px 16px 0 0',
-              background: `linear-gradient(135deg, ${color}10, transparent)`,
-              border: '1px solid rgba(255,255,255,0.05)', borderBottom: 'none',
-            }} />
-          </div>
-        )}
-      </section>
-
-      {/* ══ CONTENU ══ */}
-      <section style={{ background: '#fff', padding: '5rem 0 6rem' }}>
-        <Container>
-          <div style={{ maxWidth: 760, margin: '0 auto' }}>
-
-            {/* Ligne décorative */}
-            <motion.div
-              initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                height: 4, borderRadius: 4, marginBottom: '3rem', transformOrigin: 'left',
-                background: `linear-gradient(90deg, ${color}, transparent)`,
-              }}
+      <Header />
+      
+      <main className="bg-white min-h-screen pt-24 md:pt-28">
+        {/* Hero section avec image */}
+        <div className="relative h-[50vh] md:h-[60vh] min-h-[400px] bg-gray-900">
+          {article.cover_url ? (
+            <img
+              src={article.cover_url}
+              alt={article.title}
+              className="absolute inset-0 w-full h-full object-cover"
             />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          
+          <Container className="relative h-full flex items-end">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="pb-12 md:pb-16 text-white max-w-4xl"
+            >
+              {/* Catégorie */}
+              {article.category && (
+                <div className="mb-4">
+                  <span className="px-4 py-1.5 bg-primary rounded-full text-xs font-bold uppercase tracking-wider">
+                    {article.category}
+                  </span>
+                </div>
+              )}
+              
+              {/* Titre */}
+              <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                {article.title}
+              </h1>
+              
+              {/* Métadonnées */}
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-200">
+                {article.author && (
+                  <span className="flex items-center gap-1.5">
+                    <User size={16} /> {article.author}
+                  </span>
+                )}
+                {article.published_at && (
+                  <span className="flex items-center gap-1.5">
+                    <Calendar size={16} /> {formatDate(article.published_at)}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5">
+                  <Clock size={16} /> 
+                  {Math.ceil((article.content?.length || 0) / 1500)} min de lecture
+                </span>
+              </div>
+            </motion.div>
+          </Container>
+        </div>
 
-            {/* Contenu HTML */}
-            {article.content ? (
-              <motion.div
-                variants={fadeUp} initial="hidden"
-                whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-                className="news-prose"
+        {/* Contenu de l'article */}
+        <Container className="py-12 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Article principal */}
+            <motion.article 
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="lg:col-span-8"
+            >
+              {/* Bouton retour et partage */}
+              <div className="flex items-center justify-between mb-8">
+                <button
+                  onClick={() => navigate('/news')}
+                  className="flex items-center gap-2 text-gray-500 hover:text-primary transition"
+                >
+                  <ArrowLeft size={18} /> Retour aux articles
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-gray-600"
+                >
+                  <Share2 size={16} /> Partager
+                </button>
+              </div>
+
+              {/* Extrait */}
+              {article.excerpt && (
+                <div className="mb-8 p-6 bg-primary/5 rounded-2xl border border-primary/10">
+                  <p className="text-lg text-gray-700 italic leading-relaxed">
+                    "{article.excerpt}"
+                  </p>
+                </div>
+              )}
+
+              {/* Contenu principal */}
+              <div 
+                className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary"
                 dangerouslySetInnerHTML={{ __html: article.content }}
               />
-            ) : (
-              <p style={{ color: '#9ca3af', textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' }}>
-                Aucun contenu disponible.
-              </p>
-            )}
 
-            {/* Footer */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: 0.1 }}
-              style={{
-                marginTop: '4rem', paddingTop: '2rem',
-                borderTop: '1px solid #f3f4f6',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
-              }}
-            >
-              <button
-                onClick={() => navigate('/news')}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  fontSize: '0.875rem', fontWeight: 600, color: '#6b7280',
-                  background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s',
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = '#0b0f2a'}
-                onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}
-              >
-                <ArrowLeft size={15} /> Tous les articles
-              </button>
-
-              {article.category && (
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  fontSize: '0.8rem', fontWeight: 600,
-                  padding: '8px 16px', borderRadius: 10,
-                  background: `${color}10`, color,
-                  border: `1px solid ${color}25`,
-                }}>
-                  <Tag size={12} /> {article.category}
-                </span>
+              {/* Tags (si disponibles) */}
+              {article.tags && article.tags.length > 0 && (
+                <div className="mt-12 pt-8 border-t border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {article.tags.map(tag => (
+                      <span key={tag} className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
-            </motion.div>
+            </motion.article>
+
+            {/* Sidebar */}
+            <aside className="lg:col-span-4">
+              <div className="sticky top-24 space-y-6">
+                {/* Meta card */}
+                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                  <h3 className="font-semibold text-gray-800 mb-4">À propos de l'article</h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <Calendar size={16} className="text-primary" />
+                      <span>Publié le {formatDate(article.published_at)}</span>
+                    </div>
+                    {article.author && (
+                      <div className="flex items-center gap-3 text-gray-600">
+                        <User size={16} className="text-primary" />
+                        <span>Par {article.author}</span>
+                      </div>
+                    )}
+                    {article.category && (
+                      <div className="flex items-center gap-3 text-gray-600">
+                        <Tag size={16} className="text-primary" />
+                        <span>Catégorie : {article.category}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Articles similaires */}
+                {related.length > 0 && (
+                  <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                    <h3 className="font-semibold text-gray-800 mb-4">Articles similaires</h3>
+                    <div className="space-y-4">
+                      {related.map(rel => (
+                        <button
+                          key={rel.id}
+                          onClick={() => navigate(`/news/${rel.slug}`)}
+                          className="w-full text-left group"
+                        >
+                          <div className="flex gap-3">
+                            {rel.cover_url ? (
+                              <img 
+                                src={rel.cover_url} 
+                                alt={rel.title}
+                                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                <Tag size={20} className="text-primary/40" />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-semibold text-gray-800 group-hover:text-primary transition line-clamp-2">
+                                {rel.title}
+                              </h4>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {formatDate(rel.published_at)}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </aside>
           </div>
         </Container>
-      </section>
+      </main>
+
+      {/* Styles pour le contenu riche */}
+      <style jsx>{`
+        .prose {
+          color: #374151;
+          line-height: 1.75;
+        }
+        .prose h1, .prose h2, .prose h3, .prose h4 {
+          color: #111827;
+          margin-top: 2em;
+          margin-bottom: 0.5em;
+        }
+        .prose p {
+          margin-bottom: 1.5em;
+        }
+        .prose img {
+          border-radius: 12px;
+          margin: 2em 0;
+        }
+        .prose blockquote {
+          border-left: 4px solid #4fc3f7;
+          background: #f8fafc;
+          padding: 1em 1.5em;
+          border-radius: 8px;
+          font-style: italic;
+          margin: 1.5em 0;
+        }
+        .prose ul, .prose ol {
+          margin: 1.5em 0;
+          padding-left: 1.5em;
+        }
+        .prose li {
+          margin: 0.5em 0;
+        }
+        .prose a {
+          color: #4fc3f7;
+          text-decoration: none;
+          font-weight: 500;
+        }
+        .prose a:hover {
+          text-decoration: underline;
+        }
+        .prose pre {
+          background: #1e293b;
+          color: #e2e8f0;
+          padding: 1em;
+          border-radius: 8px;
+          overflow-x: auto;
+          margin: 1.5em 0;
+        }
+        .prose code {
+          background: #f1f5f9;
+          color: #0f172a;
+          padding: 0.2em 0.4em;
+          border-radius: 4px;
+          font-size: 0.9em;
+        }
+        .prose pre code {
+          background: transparent;
+          color: inherit;
+          padding: 0;
+        }
+      `}</style>
     </>
   )
 }
-
-export default NewsDetail
