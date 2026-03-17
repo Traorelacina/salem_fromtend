@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useApi } from '../hooks/useApi'
-import { AdminPage, PageHeader, Card, Btn, Badge, Toggle, Modal, ConfirmDialog, Spinner, Input, Textarea, FileInput, Select, Toast } from '../components/AdminUI'
+import { AdminPage, PageHeader, Card, Btn, Badge, Toggle, Modal, ConfirmDialog, Spinner, Input, Textarea, FileInput, Toast } from '../components/AdminUI'
 import { Plus, Pencil, Trash2, Calendar, User } from 'lucide-react'
 
 const EMPTY = { 
@@ -36,16 +36,12 @@ export default function AdminNews() {
       per_page: 12, 
       ...(filter && { status: filter }) 
     }).toString()
-    
     get(`/admin/news?${params}`)
-      .then(d => { 
-        setItems(d.data ?? [])
-        setMeta(d.meta ?? {}) 
-      })
-      .catch(err => showToast('Erreur lors du chargement', 'error'))
+      .then(d => { setItems(d.data ?? []); setMeta(d.meta ?? {}) })
+      .catch(() => showToast('Erreur lors du chargement', 'error'))
       .finally(() => setLoading(false))
   }
-  
+
   useEffect(load, [page, filter])
 
   const showToast = (msg, type = 'success') => { 
@@ -60,7 +56,7 @@ export default function AdminNews() {
     setCoverPrev(null)
     setModal(true) 
   }
-  
+
   const openEdit = (item) => {
     setEditing(item)
     setForm({ 
@@ -78,49 +74,34 @@ export default function AdminNews() {
   }
 
   const handleSave = async () => {
-    // Validation basique côté client
     if (!form.title || !form.excerpt || !form.content) {
       showToast('Veuillez remplir tous les champs obligatoires (*)', 'error')
       return
     }
-
     setSaving(true)
     try {
       const fd = new FormData()
-      
-      // Ajouter tous les champs du formulaire
       fd.append('title', form.title || '')
       fd.append('category', form.category || '')
       fd.append('excerpt', form.excerpt || '')
       fd.append('content', form.content || '')
       fd.append('author', form.author || 'Salem Technology')
       fd.append('is_published', form.is_published ? '1' : '0')
-      
-      if (form.published_at) {
-        fd.append('published_at', form.published_at)
-      }
-      
-      // Ajouter l'image si présente
-      if (coverFile) {
-        fd.append('cover_image', coverFile)
-      }
-      
+      if (form.published_at) fd.append('published_at', form.published_at)
+      if (coverFile) fd.append('cover_image', coverFile)
+
       let res
       if (editing) {
-        // Pour PUT avec FormData, Laravel nécessite le champ _method
         fd.append('_method', 'PUT')
         res = await post(`/admin/news/${editing.id}`, fd)
       } else {
         res = await post('/admin/news', fd)
       }
-      
       if (!res.success) throw new Error(res.message || 'Une erreur est survenue')
-      
       showToast(editing ? 'Article mis à jour avec succès.' : 'Article créé avec succès.')
       setModal(false)
       load()
     } catch(e) { 
-      console.error('Save error:', e)
       showToast(e.message || "Erreur lors de l'enregistrement", 'error')
     } finally { 
       setSaving(false) 
@@ -141,42 +122,15 @@ export default function AdminNews() {
     }
   }
 
-  const handleTogglePublished = async (item) => {
-    try {
-      const res = await put(`/admin/news/${item.id}`, { 
-        is_published: !item.is_published 
-      })
-      if (res.success) {
-        load()
-      } else {
-        showToast('Erreur lors de la mise à jour', 'error')
-      }
-    } catch (e) {
-      showToast('Erreur lors de la mise à jour', 'error')
-    }
-  }
-
   const handleCoverChange = (e) => {
     const file = e.target.files[0]
     setCoverFile(file)
-    
-    // Nettoyer l'ancienne préview
-    if (coverPrev && coverPrev.startsWith('blob:')) {
-      URL.revokeObjectURL(coverPrev)
-    }
-    
-    if (file) {
-      setCoverPrev(URL.createObjectURL(file))
-    } else {
-      setCoverPrev(null)
-    }
+    if (coverPrev && coverPrev.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
+    setCoverPrev(file ? URL.createObjectURL(file) : null)
   }
 
   const handleCloseModal = () => {
-    // Nettoyer la préview blob
-    if (coverPrev && coverPrev.startsWith('blob:')) {
-      URL.revokeObjectURL(coverPrev)
-    }
+    if (coverPrev && coverPrev.startsWith('blob:')) URL.revokeObjectURL(coverPrev)
     setModal(false)
     setCoverPrev(null)
     setCoverFile(null)
@@ -200,23 +154,24 @@ export default function AdminNews() {
         } 
       />
 
-      {/* Filters */}
+      {/* Filtres */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
         {['', 'published', 'draft'].map(s => (
           <button 
             key={s} 
             onClick={() => { setFilter(s); setPage(1) }}
             style={{ 
-              padding: '0.45rem 1rem', 
+              padding: '0.42rem 1rem', 
               borderRadius: '999px', 
-              border: '1px solid', 
-              borderColor: filter === s ? '#4fc3f7' : 'rgba(79,195,247,0.2)', 
-              background: filter === s ? 'rgba(79,195,247,0.12)' : 'transparent', 
-              color: filter === s ? '#4fc3f7' : 'rgba(186,230,253,0.5)', 
+              border: '1.5px solid', 
+              borderColor: filter === s ? 'var(--primary)' : 'var(--border)', 
+              background: filter === s ? 'var(--primary-lt)' : '#ffffff', 
+              color: filter === s ? 'var(--primary-dk)' : 'var(--text-2)', 
               fontSize: '0.78rem', 
+              fontWeight: 600,
               cursor: 'pointer', 
-              fontFamily: "'DM Sans', sans-serif", 
-              fontWeight: 500 
+              fontFamily: 'inherit',
+              transition: 'all 0.15s'
             }}
           >
             {s === '' ? 'Tous' : s === 'published' ? 'Publiés' : 'Brouillons'}
@@ -236,25 +191,41 @@ export default function AdminNews() {
           }}>
             {items.map(item => (
               <Card key={item.id} style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                {item.cover_url && (
+                {item.cover_url ? (
                   <img 
                     src={item.cover_url} 
                     alt={item.title} 
                     style={{ width: '100%', height: '140px', objectFit: 'cover' }} 
                   />
+                ) : (
+                  <div style={{ 
+                    width: '100%', height: '140px', 
+                    background: 'var(--bg)', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderBottom: '1px solid var(--border)'
+                  }}>
+                    <span style={{ fontSize: '2rem' }}>📰</span>
+                  </div>
                 )}
+
                 <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                  {/* Badges */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {item.category && <Badge color="blue">{item.category}</Badge>}
                     {statusBadge(item)}
                   </div>
-                  <div style={{ color: 'white', fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.3 }}>
+
+                  {/* Titre */}
+                  <div style={{ color: 'var(--text)', fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.35 }}>
                     {item.title}
                   </div>
+
+                  {/* Extrait */}
                   <p style={{ 
-                    color: 'rgba(186,230,253,0.45)', 
+                    color: 'var(--text-2)', 
                     fontSize: '0.78rem', 
                     margin: 0, 
+                    lineHeight: 1.55,
                     overflow: 'hidden', 
                     display: '-webkit-box', 
                     WebkitLineClamp: 2, 
@@ -262,20 +233,37 @@ export default function AdminNews() {
                   }}>
                     {item.excerpt}
                   </p>
-                  <div style={{ color: 'rgba(186,230,253,0.3)', fontSize: '0.72rem', marginTop: 'auto' }}>
-                    <User size={10} style={{ display: 'inline', marginRight: '4px' }} /> {item.author} · 
-                    <Calendar size={10} style={{ display: 'inline', marginLeft: '6px', marginRight: '4px' }} /> 
-                    {item.published_at ? new Date(item.published_at).toLocaleDateString('fr-FR') : 'Non publié'}
-                  </div>
+
+                  {/* Meta */}
                   <div style={{ 
-                    display: 'flex', 
-                    gap: '0.5rem', 
-                    paddingTop: '0.5rem', 
-                    borderTop: '1px solid rgba(79,195,247,0.08)' 
+                    color: 'var(--text-3)', 
+                    fontSize: '0.72rem', 
+                    marginTop: 'auto', 
+                    paddingTop: '0.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    flexWrap: 'wrap'
+                  }}>
+                    <User size={10} />
+                    <span>{item.author}</span>
+                    <span style={{ margin: '0 2px' }}>·</span>
+                    <Calendar size={10} />
+                    <span>
+                      {item.published_at 
+                        ? new Date(item.published_at).toLocaleDateString('fr-FR') 
+                        : 'Non publié'}
+                    </span>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ 
+                    display: 'flex', gap: '0.5rem', 
+                    paddingTop: '0.65rem', 
+                    borderTop: '1px solid var(--border)' 
                   }}>
                     <Btn 
-                      size="sm" 
-                      variant="ghost" 
+                      size="sm" variant="ghost" 
                       onClick={() => openEdit(item)} 
                       style={{ flex: 1, justifyContent: 'center' }}
                     >
@@ -288,10 +276,10 @@ export default function AdminNews() {
                 </div>
               </Card>
             ))}
-            
+
             {items.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem' }}>
-                <p style={{ color: 'rgba(186,230,253,0.3)', fontSize: '0.85rem' }}>Aucun article.</p>
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3.5rem 2rem' }}>
+                <p style={{ color: 'var(--text-3)', fontSize: '0.85rem' }}>Aucun article.</p>
                 <Btn onClick={openCreate} style={{ marginTop: '1rem' }}>
                   <Plus size={14} /> Créer un article
                 </Btn>
@@ -302,23 +290,13 @@ export default function AdminNews() {
           {/* Pagination */}
           {meta.last_page > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              <Btn 
-                variant="ghost" 
-                size="sm" 
-                disabled={page <= 1} 
-                onClick={() => setPage(p => p-1)}
-              >
+              <Btn variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
                 ← Précédent
               </Btn>
-              <span style={{ color: 'rgba(186,230,253,0.4)', fontSize: '0.82rem' }}>
+              <span style={{ color: 'var(--text-2)', fontSize: '0.82rem', fontWeight: 500 }}>
                 Page {page} / {meta.last_page}
               </span>
-              <Btn 
-                variant="ghost" 
-                size="sm" 
-                disabled={page >= meta.last_page} 
-                onClick={() => setPage(p => p+1)}
-              >
+              <Btn variant="ghost" size="sm" disabled={page >= meta.last_page} onClick={() => setPage(p => p + 1)}>
                 Suivant →
               </Btn>
             </div>
@@ -326,6 +304,7 @@ export default function AdminNews() {
         </>
       )}
 
+      {/* ── Formulaire modal ───────────────────────────────── */}
       <Modal 
         open={modal} 
         onClose={handleCloseModal} 
@@ -333,53 +312,24 @@ export default function AdminNews() {
         width="660px"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input 
-            label="Titre *" 
-            value={form.title} 
-            onChange={f('title')} 
-            placeholder="Titre de l'article"
-            required
-          />
-          
+
+          <Input label="Titre *" value={form.title} onChange={f('title')} placeholder="Titre de l'article" />
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <Input 
-              label="Catégorie (optionnel)" 
-              value={form.category} 
-              onChange={f('category')} 
-              placeholder="Tech, Actualités…" 
-            />
-            <Input 
-              label="Auteur" 
-              value={form.author} 
-              onChange={f('author')} 
-              placeholder="Salem Technology" 
-            />
+            <Input label="Catégorie (optionnel)" value={form.category} onChange={f('category')} placeholder="Tech, Actualités…" />
+            <Input label="Auteur"                value={form.author}   onChange={f('author')}   placeholder="Salem Technology" />
           </div>
-          
-          <Textarea 
-            label="Extrait *" 
-            value={form.excerpt} 
-            onChange={f('excerpt')} 
-            style={{ minHeight: '70px' }}
-            required
-          />
-          
-          <Textarea 
-            label="Contenu *" 
-            value={form.content} 
-            onChange={f('content')} 
-            style={{ minHeight: '140px' }}
-            required
-          />
-          
+
+          <Textarea label="Extrait *"         value={form.excerpt}  onChange={f('excerpt')}  style={{ minHeight: '70px' }} />
+          <Textarea label="Contenu complet *" value={form.content}  onChange={f('content')}  style={{ minHeight: '140px' }} />
+
           <FileInput 
             label="Image de couverture (optionnel)" 
             accept="image/*" 
             preview={coverPrev} 
-            onChange={handleCoverChange}
-            help="Formats acceptés : jpeg, png, jpg, gif, webp (max 4Mo)"
+            onChange={handleCoverChange} 
           />
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center' }}>
             <Toggle 
               label="Publier l'article" 
@@ -395,11 +345,9 @@ export default function AdminNews() {
               />
             )}
           </div>
-          
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-            <Btn variant="ghost" onClick={handleCloseModal}>
-              Annuler
-            </Btn>
+
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', paddingTop: '0.5rem', borderTop: '1px solid var(--border)' }}>
+            <Btn variant="ghost" onClick={handleCloseModal}>Annuler</Btn>
             <Btn onClick={handleSave} disabled={saving}>
               {saving ? 'Enregistrement…' : 'Enregistrer'}
             </Btn>
