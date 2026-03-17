@@ -1,7 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 
-// ✅ IMPORTANT : on ajoute /api ici UNE SEULE FOIS
-const API = (import.meta.env.VITE_API_URL || '') + '/api'
+const API = import.meta.env.VITE_API_URL || 'https://shocked-sharla-freelence-c2692768.koyeb.app/api'
 
 export function useApi() {
   const { token, logout } = useAuth()
