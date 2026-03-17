@@ -1,48 +1,104 @@
 import { useAuth } from '../context/AuthContext'
 
-const API = import.meta.env.VITE_API_URL ?? '/api'
+// ✅ IMPORTANT : on ajoute /api ici UNE SEULE FOIS
+const API = (import.meta.env.VITE_API_URL || '') + '/api'
 
 export function useApi() {
-  const { token } = useAuth()
+  const { token, logout } = useAuth()
 
   const headers = (isFormData = false) => {
-    const h = { Authorization: `Bearer ${token}`, Accept: 'application/json' }
-    if (!isFormData) h['Content-Type'] = 'application/json'
+    const h = {
+      Accept: 'application/json',
+    }
+
+    if (token) {
+      h['Authorization'] = `Bearer ${token}`
+    }
+
+    if (!isFormData) {
+      h['Content-Type'] = 'application/json'
+    }
+
     return h
   }
 
-  const get = (path) =>
-    fetch(`${API}${path}`, { headers: headers() }).then(r => r.json())
+  // ✅ Gestion propre des réponses (évite erreur JSON)
+  const handleResponse = async (res) => {
+    const contentType = res.headers.get('content-type')
 
-  const post = (path, body) => {
+    let data
+    if (contentType && contentType.includes('application/json')) {
+      data = await res.json()
+    } else {
+      data = await res.text()
+    }
+
+    if (!res.ok) {
+      if (res.status === 401) {
+        logout?.()
+      }
+      throw new Error(data?.message || 'Erreur API')
+    }
+
+    return data
+  }
+
+  // GET
+  const get = async (path) => {
+    const res = await fetch(`${API}${path}`, {
+      method: 'GET',
+      headers: headers(),
+    })
+    return handleResponse(res)
+  }
+
+  // POST
+  const post = async (path, body) => {
     const isFormData = body instanceof FormData
-    return fetch(`${API}${path}`, {
+
+    const res = await fetch(`${API}${path}`, {
       method: 'POST',
       headers: headers(isFormData),
       body: isFormData ? body : JSON.stringify(body),
-    }).then(r => r.json())
+    })
+
+    return handleResponse(res)
   }
 
-  const put = (path, body) => {
+  // PUT
+  const put = async (path, body) => {
     const isFormData = body instanceof FormData
+
     if (isFormData) {
-      // Laravel needs _method for PUT with FormData
       body.append('_method', 'PUT')
-      return fetch(`${API}${path}`, {
+
+      const res = await fetch(`${API}${path}`, {
         method: 'POST',
         headers: headers(true),
         body,
-      }).then(r => r.json())
+      })
+
+      return handleResponse(res)
     }
-    return fetch(`${API}${path}`, {
+
+    const res = await fetch(`${API}${path}`, {
       method: 'PUT',
       headers: headers(),
       body: JSON.stringify(body),
-    }).then(r => r.json())
+    })
+
+    return handleResponse(res)
   }
 
-  const del = (path) =>
-    fetch(`${API}${path}`, { method: 'DELETE', headers: headers() }).then(r => r.json())
+  // DELETE
+  const del = async (path) => {
+    const res = await fetch(`${API}${path}`, {
+      method: 'DELETE',
+      headers: headers(),
+    })
+
+    return handleResponse(res)
+  }
 
   return { get, post, put, del }
 }
