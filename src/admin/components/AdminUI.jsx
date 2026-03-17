@@ -1,4 +1,4 @@
-// ── Admin UI Components — palette claire / gris / bleu ──
+// ── Admin UI Components — palette gris doux / vert émeraude ──
 import {
   X, Trash2, AlertCircle, Upload, Check, Loader2,
 } from 'lucide-react'
@@ -12,29 +12,29 @@ export function injectAdminCSS() {
   s.textContent = `
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@700;800&display=swap');
     :root {
-      --bg:          #f8fafc;
+      --bg:          #f0f2f5;
       --bg-card:     #ffffff;
-      --bg-green-lt: #f0f9ff;
-      --sidebar:     #0f172a;
-      --sidebar-2:   #1e293b;
-      --primary:     #4fc3f7;
-      --primary-dk:  #0284c7;
-      --primary-lt:  #e0f2fe;
-      --accent:      #60a5fa;
-      --text:        #0f172a;
+      --bg-green-lt: #e8f3e9;
+      --sidebar:     #0a1f0e;
+      --sidebar-2:   #15321a;
+      --primary:     #16a34a;
+      --primary-dk:  #15803d;
+      --primary-lt:  #dcfce7;
+      --accent:      #22c55e;
+      --text:        #1e293b;
       --text-2:      #475569;
-      --text-3:      #94a3b8;
-      --border:      #e2e8f0;
-      --border-2:    #bae6fd;
-      --danger:      #ef4444;
+      --text-3:      #64748b;
+      --border:      #dee2e9;
+      --border-2:    #bbf7d0;
+      --danger:      #dc2626;
       --danger-lt:   #fee2e2;
-      --warning:     #f59e0b;
+      --warning:     #d97706;
       --warning-lt:  #fef3c7;
-      --info:        #3b82f6;
+      --info:        #2563eb;
       --info-lt:     #dbeafe;
-      --shadow-sm:   0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-      --shadow:      0 4px 12px rgba(0,0,0,0.05);
-      --shadow-lg:   0 12px 32px rgba(0,0,0,0.08);
+      --shadow-sm:   0 2px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
+      --shadow:      0 8px 20px rgba(0,0,0,0.05);
+      --shadow-lg:   0 16px 32px rgba(0,0,0,0.06);
       --radius:      10px;
       --radius-sm:   7px;
       --radius-lg:   14px;
@@ -43,9 +43,9 @@ export function injectAdminCSS() {
     body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); }
     input, textarea, select, button { font-family: inherit; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::-webkit-scrollbar-track { background: #e9ecef; }
+    ::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8f9aa8; }
     @keyframes adm-fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     @keyframes adm-fadeIn  { from{opacity:0} to{opacity:1} }
     @keyframes adm-spin    { to{transform:rotate(360deg)} }
@@ -92,7 +92,7 @@ export function Btn({ children, onClick, variant = 'primary', size = 'md', disab
   const sz = { sm: '0.38rem 0.85rem', md: '0.58rem 1.15rem', lg: '0.72rem 1.5rem' }
   const fs = { sm: '0.77rem', md: '0.84rem', lg: '0.9rem' }
   const v = {
-    primary: { background: 'var(--primary)', color: '#0f172a', border: 'none', boxShadow: '0 2px 8px rgba(79,195,247,0.3)' },
+    primary: { background: 'var(--primary)', color: '#fff', border: 'none', boxShadow: '0 2px 8px rgba(22,163,74,0.25)' },
     danger:  { background: 'var(--danger-lt)', color: 'var(--danger)', border: '1px solid #fecaca' },
     ghost:   { background: '#ffffff', color: 'var(--text)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
     success: { background: 'var(--primary-lt)', color: 'var(--primary-dk)', border: '1px solid var(--border-2)' },
@@ -115,7 +115,7 @@ export function Badge({ children, color = 'green' }) {
     red:    ['#fef2f2','#dc2626','#fecaca'],
     orange: ['#fff7ed','#c2410c','#fed7aa'],
     blue:   ['#eff6ff','#1d4ed8','#bfdbfe'],
-    gray:   ['#f8fafc','#475569','#e2e8f0'],
+    gray:   ['#f1f5f9','#475569','#d1d9e6'],
     purple: ['#faf5ff','#7e22ce','#e9d5ff'],
   }
   const [bg, tc, bc] = m[color] || m.gray
@@ -132,7 +132,7 @@ export function Input({ label, error, ...props }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
       {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <input {...props} style={{ padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: `1.5px solid ${error ? 'var(--danger)' : 'var(--border)'}`, background: '#ffffff', color: 'var(--text)', fontSize: '0.85rem', outline: 'none', width: '100%', transition: 'border-color 0.15s, box-shadow 0.15s', ...props.style }}
-        onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(79,195,247,0.1)' }}
+        onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)' }}
         onBlur={e  => { e.target.style.borderColor = error ? 'var(--danger)' : 'var(--border)'; e.target.style.boxShadow = 'none' }} />
       {error && <span style={{ fontSize: '0.72rem', color: 'var(--danger)' }}>{error}</span>}
     </div>
@@ -145,7 +145,7 @@ export function Textarea({ label, ...props }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
       {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <textarea {...props} style={{ padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--border)', background: '#ffffff', color: 'var(--text)', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '100px', width: '100%', transition: 'border-color 0.15s, box-shadow 0.15s', ...props.style }}
-        onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(79,195,247,0.1)' }}
+        onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)' }}
         onBlur={e  => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none' }} />
     </div>
   )
@@ -167,7 +167,7 @@ export function Select({ label, children, ...props }) {
 export function Toggle({ label, checked, onChange }) {
   return (
     <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
-      <div onClick={() => onChange(!checked)} style={{ width: '40px', height: '22px', borderRadius: '999px', background: checked ? 'var(--primary)' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0, boxShadow: checked ? '0 0 0 3px rgba(79,195,247,0.15)' : 'none' }}>
+      <div onClick={() => onChange(!checked)} style={{ width: '40px', height: '22px', borderRadius: '999px', background: checked ? 'var(--primary)' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0, boxShadow: checked ? '0 0 0 3px rgba(22,163,74,0.15)' : 'none' }}>
         <div style={{ position: 'absolute', top: '2px', left: checked ? '20px' : '2px', width: '18px', height: '18px', borderRadius: '50%', background: '#fff', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} />
       </div>
       {label && <span style={{ fontSize: '0.83rem', fontWeight: 500, color: 'var(--text-2)' }}>{label}</span>}
@@ -181,7 +181,7 @@ export function FileInput({ label, accept, onChange, preview }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
       {label && <label style={{ fontSize: '0.77rem', fontWeight: 600, color: 'var(--text-2)' }}>{label}</label>}
       <label style={{ border: '2px dashed var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', background: '#fafafa', cursor: 'pointer', display: 'block', transition: 'border-color 0.15s, background 0.15s' }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.background = '#f0f9ff' }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.background = '#f0fdf4' }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = '#fafafa' }}>
         {preview && <img src={preview} alt="" style={{ width: '100%', maxHeight: '110px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.5rem', display: 'block' }} />}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-2)', fontSize: '0.82rem' }}>
@@ -200,7 +200,7 @@ export function Modal({ open, onClose, title, children, width = '540px' }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.4)', backdropFilter: 'blur(4px)', animation: 'adm-fadeIn 0.2s ease' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)', animation: 'adm-fadeIn 0.2s ease' }} />
       <div style={{ position: 'relative', width: '100%', maxWidth: width, maxHeight: '90vh', overflowY: 'auto', background: '#ffffff', borderRadius: 'var(--radius-lg)', padding: '1.75rem', boxShadow: 'var(--shadow-lg)', animation: 'adm-slideIn 0.25s ease', border: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', fontFamily: "'Lexend', sans-serif" }}>{title}</h3>
@@ -250,10 +250,10 @@ export function Spinner() {
 export function StatCard({ icon: Icon, label, value, trend, color = 'green' }) {
   const c = {
     green:  { bg: '#f0fdf4', ic: '#15803d', bd: '#bbf7d0' },
-    blue:   { bg: '#eff6ff', ic: '#3b82f6', bd: '#bfdbfe' },
-    orange: { bg: '#fff7ed', ic: '#f97316', bd: '#fed7aa' },
-    purple: { bg: '#faf5ff', ic: '#a855f7', bd: '#e9d5ff' },
-    red:    { bg: '#fee2e2', ic: '#ef4444', bd: '#fecaca' },
+    blue:   { bg: '#eff6ff', ic: '#2563eb', bd: '#bfdbfe' },
+    orange: { bg: '#fff7ed', ic: '#d97706', bd: '#fed7aa' },
+    purple: { bg: '#faf5ff', ic: '#9333ea', bd: '#e9d5ff' },
+    red:    { bg: '#fee2e2', ic: '#dc2626', bd: '#fecaca' },
   }[color] || { bg: '#f0fdf4', ic: '#15803d', bd: '#bbf7d0' }
   return (
     <div style={{ background: '#ffffff', border: `1px solid ${c.bd}`, borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', gap: '0.85rem', boxShadow: 'var(--shadow-sm)', transition: 'all 0.2s', cursor: 'default' }}
@@ -277,8 +277,8 @@ export function Toast({ toast }) {
   const err = toast.type === 'error'
   return (
     <div style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 3000, display: 'flex', alignItems: 'center', gap: '10px', padding: '0.85rem 1.2rem', borderRadius: 'var(--radius)', background: '#ffffff', border: `1.5px solid ${err ? '#fecaca' : '#bbf7d0'}`, boxShadow: 'var(--shadow-lg)', fontSize: '0.84rem', fontWeight: 500, color: 'var(--text)', animation: 'adm-toastIn 0.3s ease', maxWidth: '320px' }}>
-      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: err ? 'var(--danger-lt)' : '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        {err ? <AlertCircle size={14} style={{ color: 'var(--danger)' }} /> : <Check size={14} style={{ color: '#15803d' }} />}
+      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: err ? 'var(--danger-lt)' : 'var(--primary-lt)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        {err ? <AlertCircle size={14} style={{ color: 'var(--danger)' }} /> : <Check size={14} style={{ color: 'var(--primary-dk)' }} />}
       </div>
       {toast.msg}
     </div>
@@ -300,9 +300,9 @@ export function TableHead({ cols }) {
 
 export function TableRow({ children, onClick, highlight }) {
   return (
-    <tr onClick={onClick} style={{ borderBottom: '1px solid #f1f5f9', cursor: onClick ? 'pointer' : 'default', transition: 'background 0.12s', background: highlight ? '#f0f9ff' : 'transparent' }}
+    <tr onClick={onClick} style={{ borderBottom: '1px solid var(--border)', cursor: onClick ? 'pointer' : 'default', transition: 'background 0.12s', background: highlight ? '#f0fdf4' : 'transparent' }}
       onMouseEnter={e => { if (!highlight) e.currentTarget.style.background = '#f8fafc' }}
-      onMouseLeave={e => { e.currentTarget.style.background = highlight ? '#f0f9ff' : 'transparent' }}>
+      onMouseLeave={e => { e.currentTarget.style.background = highlight ? '#f0fdf4' : 'transparent' }}>
       {children}
     </tr>
   )
