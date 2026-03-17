@@ -43,7 +43,6 @@ const ProjectCard = ({ project, color }) => {
           border: `1px solid ${color}20`,
         }}
       >
-        {/* Cover image ou pattern décoratif */}
         {project.cover_url ? (
           <img
             src={project.cover_url}
@@ -60,7 +59,6 @@ const ProjectCard = ({ project, color }) => {
           />
         )}
 
-        {/* Contenu centré (visible sans cover) */}
         {!project.cover_url && (
           <div className="relative z-10 text-center p-6">
             <div
@@ -141,7 +139,6 @@ const Portfolio = () => {
   const [loading, setLoading]               = useState(true)
   const [activeCategory, setActiveCategory] = useState('Tous')
 
-  // Charger les projets
   useEffect(() => {
     fetch(`${API}/v1/portfolio`, { headers: { Accept: 'application/json' } })
       .then(r => r.json())
@@ -152,7 +149,6 @@ const Portfolio = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  // Charger les catégories depuis la BDD
   useEffect(() => {
     fetch(`${API}/v1/portfolio-categories`, { headers: { Accept: 'application/json' } })
       .then(r => r.json())
@@ -162,7 +158,6 @@ const Portfolio = () => {
       .catch(() => {})
   }, [])
 
-  // Onglets : "Tous" + catégories dynamiques
   const tabs = ['Tous', ...categories.map(c => c.name)]
 
   const filtered = activeCategory === 'Tous'
@@ -179,7 +174,6 @@ const Portfolio = () => {
           center
         />
 
-        {/* Filter tabs dynamiques */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -201,21 +195,18 @@ const Portfolio = () => {
           ))}
         </motion.div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex justify-center items-center py-20">
             <Loader size={32} className="animate-spin text-primary opacity-60" />
           </div>
         )}
 
-        {/* Empty state */}
         {!loading && filtered.length === 0 && (
           <div className="text-center py-20 text-gray-400 text-sm">
             Aucune réalisation dans cette catégorie.
           </div>
         )}
 
-        {/* Grid */}
         {!loading && filtered.length > 0 && (
           <AnimatePresence mode="wait">
             <motion.div
