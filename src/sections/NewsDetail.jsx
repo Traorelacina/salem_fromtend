@@ -62,11 +62,34 @@ export default function NewsDetail() {
     }
   }
 
+  // ✅ Fonction de formatage de date sécurisée
   const formatDate = (dateStr) => {
-    if (!dateStr) return ''
-    return new Date(dateStr).toLocaleDateString('fr-FR', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    })
+    if (!dateStr) return 'Date non disponible'
+    
+    try {
+      const date = new Date(dateStr)
+      // Vérifier si la date est valide
+      if (isNaN(date.getTime())) {
+        return 'Date non disponible'
+      }
+      
+      return date.toLocaleDateString('fr-FR', {
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric'
+      })
+    } catch (e) {
+      return 'Date non disponible'
+    }
+  }
+
+  // ✅ Fonction pour calculer le temps de lecture
+  const getReadingTime = (content) => {
+    if (!content) return '1 min'
+    const wordsPerMinute = 200
+    const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
+    const minutes = Math.ceil(wordCount / wordsPerMinute)
+    return `${minutes} min de lecture`
   }
 
   const handleShare = () => {
@@ -157,21 +180,25 @@ export default function NewsDetail() {
                 {article.title}
               </h1>
               
-              {/* Métadonnées */}
+              {/* Métadonnées - avec vérifications */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-200">
                 {article.author && (
                   <span className="flex items-center gap-1.5">
                     <User size={16} /> {article.author}
                   </span>
                 )}
+                
+                {/* ✅ Date sécurisée */}
                 {article.published_at && (
                   <span className="flex items-center gap-1.5">
                     <Calendar size={16} /> {formatDate(article.published_at)}
                   </span>
                 )}
+                
+                {/* Temps de lecture */}
                 <span className="flex items-center gap-1.5">
                   <Clock size={16} /> 
-                  {Math.ceil((article.content?.length || 0) / 1500)} min de lecture
+                  {getReadingTime(article.content)}
                 </span>
               </div>
             </motion.div>
@@ -241,22 +268,37 @@ export default function NewsDetail() {
                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                   <h3 className="font-semibold text-gray-800 mb-4">À propos de l'article</h3>
                   <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-3 text-gray-600">
-                      <Calendar size={16} className="text-primary" />
-                      <span>Publié le {formatDate(article.published_at)}</span>
-                    </div>
+                    {/* ✅ Date sécurisée dans la sidebar */}
+                    {article.published_at ? (
+                      <div className="flex items-center gap-3 text-gray-600">
+                        <Calendar size={16} className="text-primary" />
+                        <span>Publié le {formatDate(article.published_at)}</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 text-gray-600">
+                        <Calendar size={16} className="text-gray-400" />
+                        <span className="text-gray-400">Non publié</span>
+                      </div>
+                    )}
+                    
                     {article.author && (
                       <div className="flex items-center gap-3 text-gray-600">
                         <User size={16} className="text-primary" />
                         <span>Par {article.author}</span>
                       </div>
                     )}
+                    
                     {article.category && (
                       <div className="flex items-center gap-3 text-gray-600">
                         <Tag size={16} className="text-primary" />
                         <span>Catégorie : {article.category}</span>
                       </div>
                     )}
+                    
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <Clock size={16} className="text-primary" />
+                      <span>Temps de lecture : {getReadingTime(article.content)}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -288,7 +330,7 @@ export default function NewsDetail() {
                                 {rel.title}
                               </h4>
                               <p className="text-xs text-gray-400 mt-1">
-                                {formatDate(rel.published_at)}
+                                {rel.published_at ? formatDate(rel.published_at) : 'Date inconnue'}
                               </p>
                             </div>
                           </div>
@@ -304,7 +346,7 @@ export default function NewsDetail() {
       </main>
 
       {/* Styles pour le contenu riche */}
-      <style jsx>{`
+      <style>{`
         .prose {
           color: #374151;
           line-height: 1.75;
