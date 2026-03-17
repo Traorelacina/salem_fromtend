@@ -7,17 +7,13 @@ import { fadeUp, staggerContainer } from '../animations/fadeAnimations'
 
 const API = import.meta.env.VITE_API_URL ?? '/api'
 
-const categories = ['Tous', 'Web', 'Mobile', 'Logiciel']
-
-// Icône par défaut selon la catégorie
 function categoryIcon(category) {
   const cat = (category ?? '').toLowerCase()
-  if (cat === 'mobile') return Smartphone
+  if (cat === 'mobile')   return Smartphone
   if (cat === 'logiciel') return Code2
   return Globe
 }
 
-// Couleur par défaut si non définie
 const DEFAULT_COLORS = ['#0D6EFD', '#10B981', '#7C3AED', '#F59E0B', '#EF4444', '#059669']
 function colorFor(index) {
   return DEFAULT_COLORS[index % DEFAULT_COLORS.length]
@@ -26,7 +22,6 @@ function colorFor(index) {
 const ProjectCard = ({ project, color }) => {
   const [hovered, setHovered] = useState(false)
   const Icon = categoryIcon(project.category)
-
   const link = project.external_link || project.android_link || project.ios_link || null
 
   return (
@@ -38,40 +33,25 @@ const ProjectCard = ({ project, color }) => {
       onMouseLeave={() => setHovered(false)}
       whileHover={{ y: -6 }}
     >
-      {/* Card background */}
       <div
         className="portfolio-img aspect-[4/3] flex items-center justify-center relative"
         style={{
-          background: project.cover_url
-            ? 'transparent'
-            : `linear-gradient(135deg, ${color}20, ${color}05)`,
+          background: project.cover_url ? 'transparent' : `linear-gradient(135deg, ${color}20, ${color}05)`,
           border: `1px solid ${color}20`,
         }}
       >
-        {/* Cover image ou pattern décoratif */}
         {project.cover_url ? (
-          <img
-            src={project.cover_url}
-            alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <img src={project.cover_url} alt={project.title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div
             className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1px)`,
-              backgroundSize: '25px 25px',
-            }}
+            style={{ backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1px)`, backgroundSize: '25px 25px' }}
           />
         )}
 
-        {/* Contenu centré (visible sans cover) */}
         {!project.cover_url && (
           <div className="relative z-10 text-center p-6">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
-              style={{ background: color }}
-            >
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg" style={{ background: color }}>
               <Icon size={28} className="text-white" />
             </div>
             <h4 className="font-bold text-dark text-base mb-1">{project.title}</h4>
@@ -79,7 +59,6 @@ const ProjectCard = ({ project, color }) => {
           </div>
         )}
 
-        {/* Hover overlay */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: hovered ? 1 : 0 }}
@@ -88,51 +67,34 @@ const ProjectCard = ({ project, color }) => {
           style={{ background: `linear-gradient(135deg, ${color}ee, ${color}cc)` }}
         >
           {project.client_logo_url && (
-            <img
-              src={project.client_logo_url}
-              alt={project.client}
-              className="w-10 h-10 object-contain mb-3 rounded-lg bg-white/20 p-1"
-            />
+            <img src={project.client_logo_url} alt={project.client} className="w-10 h-10 object-contain mb-3 rounded-lg bg-white/20 p-1" />
           )}
           <h4 className="text-white font-bold text-lg mb-2 text-center">{project.title}</h4>
-          <p className="text-white/80 text-sm text-center leading-relaxed mb-4 line-clamp-3">
-            {project.short_description}
-          </p>
+          <p className="text-white/80 text-sm text-center leading-relaxed mb-4 line-clamp-3">{project.short_description}</p>
           {link && (
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
+            
+              href={link} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 text-white font-semibold text-sm bg-white/20 px-4 py-2 rounded-full hover:bg-white/30 transition"
               onClick={e => e.stopPropagation()}
             >
-              <ExternalLink size={14} />
-              Voir le projet
+              <ExternalLink size={14} /> Voir le projet
             </a>
           )}
         </motion.div>
       </div>
 
-      {/* Card footer */}
       <div className="bg-white px-5 py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             {project.client_logo_url && (
-              <img
-                src={project.client_logo_url}
-                alt={project.client}
-                className="w-6 h-6 object-contain rounded flex-shrink-0"
-              />
+              <img src={project.client_logo_url} alt={project.client} className="w-6 h-6 object-contain rounded flex-shrink-0" />
             )}
             <div className="min-w-0">
               <h4 className="font-semibold text-dark text-sm truncate">{project.title}</h4>
               <p className="text-gray-400 text-xs truncate">{project.client}</p>
             </div>
           </div>
-          <span
-            className="px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0"
-            style={{ background: `${color}15`, color }}
-          >
+          <span className="px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0" style={{ background: `${color}15`, color }}>
             {project.category}
           </span>
         </div>
@@ -142,26 +104,34 @@ const ProjectCard = ({ project, color }) => {
 }
 
 const Portfolio = () => {
-  const [projects, setProjects] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [projects, setProjects]             = useState([])
+  const [categories, setCategories]         = useState([])
+  const [loading, setLoading]               = useState(true)
   const [activeCategory, setActiveCategory] = useState('Tous')
 
+  // Charger les projets
   useEffect(() => {
     fetch(`${API}/v1/portfolio`, { headers: { Accept: 'application/json' } })
       .then(r => r.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.data)) {
-          setProjects(data.data)
-        }
-      })
+      .then(data => { if (data.success && Array.isArray(data.data)) setProjects(data.data) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
-  const filtered =
-    activeCategory === 'Tous'
-      ? projects
-      : projects.filter(p => p.category === activeCategory)
+  // Charger les catégories depuis la BDD
+  useEffect(() => {
+    fetch(`${API}/v1/portfolio-categories`, { headers: { Accept: 'application/json' } })
+      .then(r => r.json())
+      .then(data => { if (data.success && Array.isArray(data.data)) setCategories(data.data) })
+      .catch(() => {})
+  }, [])
+
+  // Onglets : "Tous" + catégories dynamiques
+  const tabs = ['Tous', ...categories.map(c => c.name)]
+
+  const filtered = activeCategory === 'Tous'
+    ? projects
+    : projects.filter(p => p.category === activeCategory)
 
   return (
     <section id="portfolio" className="section-padding bg-light">
@@ -173,14 +143,14 @@ const Portfolio = () => {
           center
         />
 
-        {/* Filter tabs */}
+        {/* Filter tabs dynamiques */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="flex justify-center gap-2 mb-10 flex-wrap"
         >
-          {categories.map(cat => (
+          {tabs.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -195,21 +165,18 @@ const Portfolio = () => {
           ))}
         </motion.div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex justify-center items-center py-20">
             <Loader size={32} className="animate-spin text-primary opacity-60" />
           </div>
         )}
 
-        {/* Empty state */}
         {!loading && filtered.length === 0 && (
           <div className="text-center py-20 text-gray-400 text-sm">
             Aucune réalisation dans cette catégorie.
           </div>
         )}
 
-        {/* Grid */}
         {!loading && filtered.length > 0 && (
           <AnimatePresence mode="wait">
             <motion.div
@@ -222,11 +189,7 @@ const Portfolio = () => {
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {filtered.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  color={colorFor(index)}
-                />
+                <ProjectCard key={project.id} project={project} color={colorFor(index)} />
               ))}
             </motion.div>
           </AnimatePresence>
