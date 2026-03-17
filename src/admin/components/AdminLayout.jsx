@@ -3,14 +3,14 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { injectAdminCSS } from '../components/AdminUI'
 import {
-  LayoutDashboard, Settings, Layers, Briefcase,
+  LayoutDashboard, Layers, Briefcase,
   Users, Newspaper, MessageSquare, LogOut,
-  ChevronLeft, ChevronRight, Bell, Menu, X,
+  ChevronLeft, ChevronRight, Bell,
 } from 'lucide-react'
 
+// ✅ NAV sans "Services"
 const NAV = [
   { to: '/admin',           label: 'Tableau de bord', Icon: LayoutDashboard, exact: true },
-  { to: '/admin/services',  label: 'Services',         Icon: Settings },
   { to: '/admin/solutions', label: 'Solutions',        Icon: Layers },
   { to: '/admin/portfolio', label: 'Réalisations',     Icon: Briefcase },
   { to: '/admin/clients',   label: 'Clients',          Icon: Users },
