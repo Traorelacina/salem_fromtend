@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import Particles from 'react-tsparticles'
 import { loadSlim } from 'tsparticles-slim'
 import heroImg from '../assets/images/image_salem.png'
+import ServicesDescription from './ServicesDescription'
+import Services from './Services'
 import Clients from './Clients'
 
 function getParticleCount() {
@@ -62,8 +64,8 @@ function Counter({ target, suffix, inView }) {
 
 const STATS = [
   { value: 100, suffix: '+', label: 'Projets livrés' },
-  { value: 10, suffix: '+', label: "Années d'expérience" },
-  { value: 98, suffix: '%', label: 'Clients satisfaits' },
+  { value: 10,  suffix: '+', label: "Années d'expérience" },
+  { value: 98,  suffix: '%', label: 'Clients satisfaits' },
 ]
 
 export default function HomeHero() {
@@ -124,8 +126,6 @@ export default function HomeHero() {
           {/* Texte */}
           <div style={{ flex: '1 1 360px', display: 'flex', flexDirection: 'column', gap: '1rem', fontFamily: "'DM Sans',sans-serif" }}>
 
-         
-
             {/* Badge agence */}
             <div style={{ ...fi('0.3s'), display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '4px 14px', borderRadius: '9999px', border: '1px solid rgba(79,195,247,0.32)', background: 'rgba(79,195,247,0.07)', color: '#4fc3f7', fontSize: '0.68rem', letterSpacing: '0.13em', textTransform: 'uppercase', width: 'fit-content' }}>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#4fc3f7', animation: 'pulse 2s infinite', display: 'inline-block' }} />
@@ -142,8 +142,7 @@ export default function HomeHero() {
             {/* Description */}
             <div style={fi('0.6s')}>
               <p style={{ fontSize: '0.88rem', lineHeight: 1.75, color: 'rgba(186,230,253,0.72)', margin: 0, maxWidth: '380px' }}>
-                Conception de logiciel, sites web, applications mobiles, vidéosurveillance, gps 
-tracker – pour entreprises et institutions.
+                Conception de logiciel, sites web, applications mobiles, vidéosurveillance, GPS tracker — pour entreprises et institutions.
               </p>
             </div>
 
@@ -211,8 +210,14 @@ tracker – pour entreprises et institutions.
         <style>{`@media(max-width:580px){ .stats-grid{ grid-template-columns:1fr !important; } }`}</style>
       </section>
 
+      
+
+      {/* ══ 3. SERVICES ══ */}
+      <Services />
+
       {/* ══ 4. CLIENTS ══ */}
       <Clients />
+      
     </>
   )
 }
