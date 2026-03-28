@@ -17,7 +17,7 @@ import News       from './sections/News'
 import Contact    from './sections/Contact'
 import SolutionDetail from './sections/SolutionDetail'
 import NewsDetail      from './sections/NewsDetail'
-
+import PortfolioDetail from './sections/PortfolioDetail'
 // ── Admin ──────────────────────────────────────────────────
 import { AuthProvider }    from './admin/context/AuthContext'
 import AdminLogin          from './admin/pages/AdminLogin'
@@ -93,6 +93,7 @@ function AppRoutes() {
         <Route path="/contact"   element={<PublicLayout showPageHero><Contact /></PublicLayout>} />
         <Route path="/news/:slug" element={<NewsDetail />} />
         <Route path="/solutions/:slug" element={<SolutionDetail />} />
+        <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
 
         {/* ── ADMIN ROUTES ─────────────────────────────────── */}
         <Route path="/admin/login" element={<AdminLogin />} />

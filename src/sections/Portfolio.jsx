@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, Globe, Smartphone, Code2, Loader } from 'lucide-react'
+import { ExternalLink, Globe, Smartphone, Code2, Loader, ArrowRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import Container from '../components/Container'
 import SectionTitle from '../components/SectionTitle'
 import { fadeUp, staggerContainer } from '../animations/fadeAnimations'
@@ -21,55 +22,58 @@ function colorFor(index) {
 
 const ProjectCard = ({ project, color }) => {
   const [hovered, setHovered] = useState(false)
+  const navigate = useNavigate()
   const Icon = categoryIcon(project.category)
   const link = project.external_link || project.android_link || project.ios_link || null
+
+  const goToDetail = () => navigate(`/portfolio/${project.slug}`)
 
   return (
     <motion.div
       variants={fadeUp}
-      className="portfolio-item relative overflow-hidden rounded-2xl cursor-pointer group"
-      style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}
+      className="portfolio-item relative overflow-hidden rounded-2xl group flex flex-col"
+      style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.1)', background: '#fff' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       whileHover={{ y: -6 }}
     >
-      {/* Card background */}
+      {/* ── Image / visuel ── */}
       <div
-        className="portfolio-img aspect-[4/3] flex items-center justify-center relative"
+        className="portfolio-img aspect-[4/3] flex items-center justify-center relative overflow-hidden cursor-pointer"
         style={{
           background: project.cover_url
             ? 'transparent'
             : `linear-gradient(135deg, ${color}20, ${color}05)`,
           border: `1px solid ${color}20`,
         }}
+        onClick={goToDetail}
       >
         {project.cover_url ? (
           <img
             src={project.cover_url}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1px)`,
-              backgroundSize: '25px 25px',
-            }}
-          />
-        )}
-
-        {!project.cover_url && (
-          <div className="relative z-10 text-center p-6">
+          <>
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
-              style={{ background: color }}
-            >
-              <Icon size={28} className="text-white" />
+              className="absolute inset-0 opacity-5"
+              style={{
+                backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1px)`,
+                backgroundSize: '25px 25px',
+              }}
+            />
+            <div className="relative z-10 text-center p-6">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                style={{ background: color }}
+              >
+                <Icon size={28} className="text-white" />
+              </div>
+              <h4 className="font-bold text-dark text-base mb-1">{project.title}</h4>
+              <p className="text-gray-400 text-xs">{project.category}</p>
             </div>
-            <h4 className="font-bold text-dark text-base mb-1">{project.title}</h4>
-            <p className="text-gray-400 text-xs">{project.category}</p>
-          </div>
+          </>
         )}
 
         {/* Hover overlay */}
@@ -77,7 +81,7 @@ const ProjectCard = ({ project, color }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: hovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
-          className="portfolio-overlay absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
+          className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
           style={{ background: `linear-gradient(135deg, ${color}ee, ${color}cc)` }}
         >
           {project.client_logo_url && (
@@ -91,23 +95,15 @@ const ProjectCard = ({ project, color }) => {
           <p className="text-white/80 text-sm text-center leading-relaxed mb-4 line-clamp-3">
             {project.short_description}
           </p>
-          {link && (
-            // ✅ Correction : balise <a> correctement formatée
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white font-semibold text-sm bg-white/20 px-4 py-2 rounded-full hover:bg-white/30 transition"
-              onClick={e => e.stopPropagation()}
-            >
-              <ExternalLink size={14} /> Voir le projet
-            </a>
-          )}
+          <div className="flex items-center gap-2 text-white font-semibold text-sm bg-white/20 px-4 py-2 rounded-full">
+            <ArrowRight size={14} /> Cliquer pour voir
+          </div>
         </motion.div>
       </div>
 
-      {/* Card footer */}
-      <div className="bg-white px-5 py-4">
+      {/* ── Footer ── */}
+      <div className="bg-white px-5 py-4 flex flex-col gap-3 flex-1">
+        {/* Titre + catégorie */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             {project.client_logo_url && (
@@ -128,6 +124,37 @@ const ProjectCard = ({ project, color }) => {
           >
             {project.category}
           </span>
+        </div>
+
+        {/* Boutons */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={goToDetail}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+            style={{
+              background: `${color}12`,
+              color,
+              border: `1px solid ${color}30`,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${color}22` }}
+            onMouseLeave={e => { e.currentTarget.style.background = `${color}12` }}
+          >
+            <ArrowRight size={13} />
+            En savoir plus
+          </button>
+
+          {link && !project.is_confidential && (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-gray-500 border border-gray-200 hover:border-gray-400 transition-all duration-200"
+              onClick={e => e.stopPropagation()}
+            >
+              <ExternalLink size={13} />
+              Voir en ligne
+            </a>
+          )}
         </div>
       </div>
     </motion.div>
@@ -169,7 +196,7 @@ const Portfolio = () => {
     <section id="portfolio" className="section-padding bg-light">
       <Container>
         <SectionTitle
-          subtitle="Nos réalisations"
+          subtitle="Nos solutions & réalisations"
           title="Découvrez certaines de nos réalisations"
           description="Des projets livrés avec succès pour des clients en Côte d'Ivoire, en Afrique et en Europe."
           center

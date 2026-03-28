@@ -47,7 +47,7 @@ const PAGE_META = {
     badge: 'Notre histoire',
     title: 'Qui sommes-',
     titleAccent: 'nous',
-    description: 'Une équipe passionnée au service de votre transformation numérique depuis plus de 10 ans en Côte d\'Ivoire.',
+    description: "Une équipe passionnée au service de votre transformation numérique depuis plus de 10 ans en Côte d'Ivoire.",
   },
   '/services': {
     badge: 'Ce que nous faisons',
@@ -63,9 +63,9 @@ const PAGE_META = {
   },
   '/portfolio': {
     badge: 'Notre travail',
-    title: 'Nos ',
-    titleAccent: 'solutions et réalisations',
-    description: 'Découvrez les projets que nous avons menés à bien pour nos clients à travers l\'Afrique et au-delà.',
+    title: 'Nos solutions & ',
+    titleAccent: 'réalisations',
+    description: "Découvrez les projets que nous avons menés à bien pour nos clients à travers l'Afrique et au-delà.",
   },
   '/news': {
     badge: 'Actualités',
@@ -77,15 +77,25 @@ const PAGE_META = {
     badge: 'Parlons-en',
     title: 'Contactez-',
     titleAccent: 'nous',
-    description: 'Discutons de votre projet ensemble. Notre équipe est disponible et vous répond sous 24h.',
+    description: "Discutons de votre projet ensemble. Notre équipe est disponible et vous répond sous 24h.",
   },
 }
 
-const PageHero = ({ pathname }) => {
+/**
+ * PageHero — héro réutilisable pour toutes les pages internes.
+ *
+ * Props :
+ *   pathname  {string}  — route courante, ex : '/about'
+ *   meta      {object}  — override optionnel { badge, title, titleAccent, description }
+ *                         Utilisé par PortfolioDetail pour injecter le titre du projet.
+ */
+const PageHero = ({ pathname, meta: metaOverride }) => {
   const [particleCount, setParticleCount] = useState(getParticleCount)
   const [visible, setVisible] = useState(false)
   const navigate = useNavigate()
-  const meta = PAGE_META[pathname] ?? PAGE_META['/services']
+
+  /* Résolution du meta : override > PAGE_META[pathname] > fallback services */
+  const meta = metaOverride ?? PAGE_META[pathname] ?? PAGE_META['/services']
 
   useEffect(() => {
     setVisible(false)
@@ -116,28 +126,26 @@ const PageHero = ({ pathname }) => {
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        /* Même bleu marine lumineux que HomeHero */
         background: 'linear-gradient(145deg, #0d1b3e 0%, #102a5a 40%, #0e2348 70%, #0a1a38 100%)',
       }}
     >
       {/* ── Particles ── */}
       <Particles
-        id={`particles-${pathname.replace('/', '')}`}
+        id={`particles-${pathname.replace(/\//g, '-')}`}
         init={particlesInit}
         options={buildConfig(particleCount)}
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}
       />
 
-      {/* ── Overlay allégé ── */}
+      {/* ── Overlay ── */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
         background: 'linear-gradient(160deg, rgba(13,27,62,0.40) 0%, rgba(16,42,90,0.30) 40%, rgba(13,27,62,0.78) 100%)',
       }} />
 
-      {/* ── Glow blobs plus lumineux ── */}
+      {/* ── Glow blobs ── */}
       <div style={{ position: 'absolute', top: '-15%', left: '5%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(79,195,247,0.28), transparent 70%)', filter: 'blur(90px)', zIndex: 1, pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', bottom: '-10%', right: '0%', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(96,165,250,0.22), transparent 70%)', filter: 'blur(80px)', zIndex: 1, pointerEvents: 'none' }} />
-      {/* Blob central subtil */}
       <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%,-50%)', width: '600px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(56,189,248,0.08),transparent 70%)', filter: 'blur(60px)', zIndex: 1, pointerEvents: 'none' }} />
 
       {/* ── Layout 2 colonnes ── */}
@@ -175,7 +183,7 @@ const PageHero = ({ pathname }) => {
           </div>
         </div>
 
-        {/* ── DROITE : Texte page ── */}
+        {/* ── DROITE : Texte ── */}
         <div style={{
           flex: '1 1 360px',
           display: 'flex', flexDirection: 'column', gap: '1rem',
@@ -220,16 +228,18 @@ const PageHero = ({ pathname }) => {
             <p style={{
               fontSize: '0.88rem', lineHeight: 1.75,
               color: 'rgba(186,230,253,0.72)',
-              margin: 0, maxWidth: '380px',
+              margin: 0, maxWidth: '420px',
             }}>
               {meta.description}
             </p>
           </div>
 
-          {/* CTA — retour accueil */}
-          <div style={{ ...fadeIn('0.75s'), marginTop: '0.3rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          {/* CTA */}
+          <div style={{ ...fadeIn('0.75s'), marginTop: '0.3rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+
+            {/* Bouton retour : portfolio detail → /portfolio, autres → / */}
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate(pathname.startsWith('/portfolio/') ? '/portfolio' : '/')}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '7px',
                 background: 'transparent',
@@ -243,13 +253,24 @@ const PageHero = ({ pathname }) => {
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(79,195,247,0.28)'; e.currentTarget.style.color = 'rgba(186,230,253,0.75)' }}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-              Accueil
+              {pathname.startsWith('/portfolio/') ? 'Nos réalisations' : 'Accueil'}
             </button>
 
-            {/* Fil d'Ariane discret */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {/* Fil d'Ariane */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '0.7rem', color: 'rgba(186,230,253,0.3)' }}>Salem Technology</span>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(186,230,253,0.25)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              {pathname.startsWith('/portfolio/') && (
+                <>
+                  <span
+                    onClick={() => navigate('/portfolio')}
+                    style={{ fontSize: '0.7rem', color: 'rgba(186,230,253,0.4)', cursor: 'pointer' }}
+                  >
+                    Réalisations
+                  </span>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(186,230,253,0.25)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </>
+              )}
               <span style={{ fontSize: '0.7rem', color: '#4fc3f7', fontWeight: 600 }}>{meta.badge}</span>
             </div>
           </div>
@@ -271,9 +292,9 @@ const PageHero = ({ pathname }) => {
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-        @keyframes floatY   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        @keyframes floatY    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
         @keyframes scrollDot { 0%{transform:translateY(0);opacity:1} 60%{transform:translateY(9px);opacity:.4} 100%{transform:translateY(0);opacity:1} }
-        @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:.4} }
       `}</style>
     </section>
   )
