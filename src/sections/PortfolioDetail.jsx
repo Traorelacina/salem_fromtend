@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import Container from '../components/Container'
 import Header from '../components/Header'
-import PageHero from '../components/PageHero'
+import PageHero from '../components/Pagehero'
 import Footer from '../components/Footer'
 import { fadeUp, fadeLeft, fadeRight, staggerContainer } from '../animations/fadeAnimations'
 
