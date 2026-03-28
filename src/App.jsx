@@ -4,32 +4,34 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 
 // ── Public components ──────────────────────────────────────
-import Header    from './components/Header'
-import Footer    from './components/Footer'
-import PageHero  from './components/Pagehero'
+import Header         from './components/Header'
+import Footer         from './components/Footer'
+import PageHero       from './components/Pagehero'
+import WhatsAppButton from './sections/WhatsAppButton'
 
-import Hero       from './sections/Hero'
-import About      from './sections/About'
-import Services   from './sections/Services'
-import Solutions  from './sections/Solutions'
-import Portfolio  from './sections/Portfolio'
-import News       from './sections/News'
-import Contact    from './sections/Contact'
-import SolutionDetail from './sections/SolutionDetail'
+import Hero            from './sections/Hero'
+import About           from './sections/About'
+import Services        from './sections/Services'
+import Solutions       from './sections/Solutions'
+import Portfolio       from './sections/Portfolio'
+import News            from './sections/News'
+import Contact         from './sections/Contact'
+import SolutionDetail  from './sections/SolutionDetail'
 import NewsDetail      from './sections/NewsDetail'
 import PortfolioDetail from './sections/PortfolioDetail'
+
 // ── Admin ──────────────────────────────────────────────────
-import { AuthProvider }    from './admin/context/AuthContext'
-import AdminLogin          from './admin/pages/AdminLogin'
-import AdminLayout         from './admin/components/AdminLayout'
-import ProtectedRoute      from './admin/components/ProtectedRoute'
-import AdminDashboard      from './admin/pages/AdminDashboard'
-import AdminServices       from './admin/pages/AdminServices'
-import AdminSolutions      from './admin/pages/AdminSolutions'
-import AdminPortfolio      from './admin/pages/AdminPortfolio'
-import AdminClients        from './admin/pages/AdminClients'
-import AdminNews           from './admin/pages/AdminNews'
-import AdminContacts       from './admin/pages/AdminContacts'
+import { AuthProvider }  from './admin/context/AuthContext'
+import AdminLogin        from './admin/pages/AdminLogin'
+import AdminLayout       from './admin/components/AdminLayout'
+import ProtectedRoute    from './admin/components/ProtectedRoute'
+import AdminDashboard    from './admin/pages/AdminDashboard'
+import AdminServices     from './admin/pages/AdminServices'
+import AdminSolutions    from './admin/pages/AdminSolutions'
+import AdminPortfolio    from './admin/pages/AdminPortfolio'
+import AdminClients      from './admin/pages/AdminClients'
+import AdminNews         from './admin/pages/AdminNews'
+import AdminContacts     from './admin/pages/AdminContacts'
 
 // ── Scroll to top on every route change ──────────────────────
 function ScrollToTop() {
@@ -63,6 +65,8 @@ function PageWrapper({ children, showPageHero = false }) {
 }
 
 // ── Public layout wrapper ─────────────────────────────────
+// WhatsAppButton est rendu ici → présent sur toutes les pages publiques
+// mais absent des pages admin.
 function PublicLayout({ children, showPageHero = false }) {
   return (
     <>
@@ -73,6 +77,9 @@ function PublicLayout({ children, showPageHero = false }) {
         </PageWrapper>
       </main>
       <Footer />
+
+      {/* ── Bouton WhatsApp flottant ── */}
+      <WhatsAppButton />
     </>
   )
 }
@@ -83,17 +90,20 @@ function AppRoutes() {
       <ScrollToTop />
       <AOSRefresh />
       <Routes>
+
         {/* ── PUBLIC ROUTES ────────────────────────────────── */}
-        <Route path="/" element={<PublicLayout><Hero /></PublicLayout>} />
+        <Route path="/"          element={<PublicLayout><Hero /></PublicLayout>} />
         <Route path="/about"     element={<PublicLayout showPageHero><About /></PublicLayout>} />
         <Route path="/services"  element={<PublicLayout showPageHero><Services /></PublicLayout>} />
         <Route path="/solutions" element={<PublicLayout showPageHero><Solutions /></PublicLayout>} />
         <Route path="/portfolio" element={<PublicLayout showPageHero><Portfolio /></PublicLayout>} />
         <Route path="/news"      element={<PublicLayout showPageHero><News /></PublicLayout>} />
         <Route path="/contact"   element={<PublicLayout showPageHero><Contact /></PublicLayout>} />
-        <Route path="/news/:slug" element={<NewsDetail />} />
-        <Route path="/solutions/:slug" element={<SolutionDetail />} />
-        <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
+
+        {/* Pages détail — ont leur propre Header/Footer/Hero intégrés */}
+        <Route path="/news/:slug"       element={<><NewsDetail />      <WhatsAppButton /></>} />
+        <Route path="/solutions/:slug"  element={<><SolutionDetail />  <WhatsAppButton /></>} />
+        <Route path="/portfolio/:slug"  element={<><PortfolioDetail /> <WhatsAppButton /></>} />
 
         {/* ── ADMIN ROUTES ─────────────────────────────────── */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -103,13 +113,13 @@ function AppRoutes() {
             <AdminLayout />
           </ProtectedRoute>
         }>
-          <Route index        element={<AdminDashboard />} />
-          <Route path="services"  element={<AdminServices />} />
-          <Route path="solutions" element={<AdminSolutions />} />
-          <Route path="portfolio" element={<AdminPortfolio />} />
-          <Route path="clients"   element={<AdminClients />} />
-          <Route path="news"      element={<AdminNews />} />
-          <Route path="contacts"  element={<AdminContacts />} />
+          <Route index             element={<AdminDashboard />} />
+          <Route path="services"   element={<AdminServices />} />
+          <Route path="solutions"  element={<AdminSolutions />} />
+          <Route path="portfolio"  element={<AdminPortfolio />} />
+          <Route path="clients"    element={<AdminClients />} />
+          <Route path="news"       element={<AdminNews />} />
+          <Route path="contacts"   element={<AdminContacts />} />
         </Route>
 
         {/* Fallback */}
@@ -127,7 +137,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="font-poppins" style={{ display:'flex', flexDirection:'column', minHeight:'100vh' }}>
+        <div className="font-poppins" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <AppRoutes />
         </div>
       </AuthProvider>
