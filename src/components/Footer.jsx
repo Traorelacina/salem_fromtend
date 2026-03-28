@@ -7,13 +7,11 @@ const Footer = () => {
   const year = new Date().getFullYear()
 
   const quickLinks = [
-    { label: 'Accueil',          to: '/' },
-    { label: 'Qui sommes-nous',  to: '/about' },
-    { label: 'Nos services',     to: '/services' },
-    { label: 'Nos solutions',    to: '/solutions' },
-    { label: 'Nos réalisations', to: '/portfolio' },
-    { label: 'News',             to: '/news' },
-    { label: 'Contact',          to: '/contact' },
+    { label: 'Accueil',                       to: '/'          },
+    { label: 'Qui sommes-nous',               to: '/about'     },
+    { label: 'Nos services',                  to: '/services'  },
+    { label: 'Nos solutions & réalisations',  to: '/portfolio' },
+    { label: 'Contact',                       to: '/contact'   },
   ]
 
   const services = [
@@ -21,15 +19,15 @@ const Footer = () => {
     'Conception de sites web',
     'Applications mobiles',
     'Réseaux informatiques',
-    'Marketing digital',
-    'Conseil IT',
+    'Vidéosurveillance',
+    'GPS Trackers',
   ]
 
   const socials = [
-    { icon: <Facebook size={18} />, href: '#', label: 'Facebook' },
-    { icon: <Linkedin size={18} />, href: '#', label: 'LinkedIn' },
+    { icon: <Facebook  size={18} />, href: '#', label: 'Facebook'  },
+    { icon: <Linkedin  size={18} />, href: '#', label: 'LinkedIn'  },
     { icon: <Instagram size={18} />, href: '#', label: 'Instagram' },
-    { icon: <Twitter size={18} />, href: '#', label: 'Twitter' },
+    { icon: <Twitter   size={18} />, href: '#', label: 'Twitter'   },
   ]
 
   return (
@@ -41,13 +39,13 @@ const Footer = () => {
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
 
-            {/* Brand */}
+            {/* ── Brand ── */}
             <div>
               <h3 className="text-xl font-extrabold mb-4">
                 SALEM<span className="gradient-text"> TECHNOLOGY</span>
               </h3>
               <p className="text-blue-200/70 text-sm leading-relaxed mb-6">
-                Start-up spécialisée dans la conception et le développement d'applications Web, Mobile et PC. Votre partenaire digital de confiance en Côte d'Ivoire.
+                Agence IT spécialisée dans le développement web, mobile, vidéosurveillance et GPS trackers. Votre partenaire digital de confiance en Côte d'Ivoire depuis 2015.
               </p>
               <div className="flex gap-3">
                 {socials.map((s) => (
@@ -64,7 +62,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Quick Links */}
+            {/* ── Liens rapides ── */}
             <div>
               <h4 className="font-semibold text-white mb-5 text-sm uppercase tracking-widest">
                 Liens rapides
@@ -84,7 +82,7 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Services */}
+            {/* ── Services ── */}
             <div>
               <h4 className="font-semibold text-white mb-5 text-sm uppercase tracking-widest">
                 Nos services
@@ -101,24 +99,34 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Contact */}
+            {/* ── Contact ── */}
             <div>
               <h4 className="font-semibold text-white mb-5 text-sm uppercase tracking-widest">
                 Contact
               </h4>
               <ul className="space-y-4">
+
+                {/* Adresse */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <MapPin size={16} className="text-secondary mt-0.5 flex-shrink-0" />
-                  Abidjan, Côte d'Ivoire
+                  <div>
+                    <p className="text-white/85 font-medium">Plateau Dokui</p>
+                    <p>En face de la SODECI</p>
+                    <p>Abidjan, Côte d'Ivoire</p>
+                  </div>
                 </li>
+
+                {/* Téléphones */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <Phone size={16} className="text-secondary mt-0.5 flex-shrink-0" />
                   <div className="flex flex-col gap-1">
                     <a href="tel:+2250708425501" className="hover:text-white transition-colors">+225 07 08 42 55 01</a>
-                    <a href="tel:+2250708221901" className="hover:text-white transition-colors">+225 07 08 22 19 01</a>
                     <a href="tel:+2250504594769" className="hover:text-white transition-colors">+225 05 04 59 47 69</a>
+                    <a href="tel:+2250747111570" className="hover:text-white transition-colors">+225 07 47 11 15 70</a>
                   </div>
                 </li>
+
+                {/* Email */}
                 <li className="flex items-center gap-3 text-blue-200/70 text-sm">
                   <Mail size={16} className="text-secondary flex-shrink-0" />
                   <a href="mailto:salemtechnology2000@gmail.com" className="hover:text-white transition-colors break-all">
@@ -126,6 +134,8 @@ const Footer = () => {
                   </a>
                 </li>
               </ul>
+
+              {/* Horaires */}
               <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
                 <p className="text-xs text-blue-200/60 mb-2">Horaires d'ouverture</p>
                 <p className="text-sm text-white/80">Lun – Ven : 8h00 – 18h00</p>
@@ -134,12 +144,14 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom bar */}
+          {/* ── Bottom bar ── */}
           <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-blue-200/50 text-sm">
               © {year} Salem Technology. Tous droits réservés.
             </p>
-            
+            <p className="text-blue-200/30 text-xs">
+              Abidjan, Côte d'Ivoire
+            </p>
           </div>
         </Container>
       </div>

@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, ExternalLink, Globe, Smartphone, Code2,
   Loader, Lock, Tag, ChevronLeft, ChevronRight,
-  MapPin, Phone, Mail, ArrowRight, Star,
+  ArrowRight, Star,
 } from 'lucide-react'
 import Container from '../components/Container'
 import Header from '../components/Header'
-import PageHero from '../components/Pagehero'
+import PageHero from '../components/PageHero'
+import Footer from '../components/Footer'
 import { fadeUp, fadeLeft, fadeRight, staggerContainer } from '../animations/fadeAnimations'
 
 const API = import.meta.env.VITE_API_URL ?? '/api'
@@ -106,149 +107,6 @@ const Lightbox = ({ images, startIndex, onClose }) => {
         </p>
       )}
     </motion.div>
-  )
-}
-
-/* ══════════════════════════════════════════════════════
-   FOOTER
-══════════════════════════════════════════════════════ */
-const Footer = () => {
-  const navigate = useNavigate()
-  const CYAN = '#4fc3f7'
-  const year = new Date().getFullYear()
-
-  const navLinks = [
-    { label: 'Accueil',                      href: '/' },
-    { label: 'Qui sommes-nous',              href: '/about' },
-    { label: 'Nos services',                 href: '/services' },
-    { label: 'Nos solutions & réalisations', href: '/portfolio' },
-    { label: 'Contact',                      href: '/contact' },
-  ]
-
-  const services = ['Sites Web', 'Applications mobiles', 'Logiciels de gestion', 'Réseaux informatiques', 'Vidéosurveillance', 'GPS Trackers']
-
-  const contacts = [
-    { icon: MapPin, lines: ["Plateau Dokui, en face de la SODECI", "Abidjan, Côte d'Ivoire"] },
-    { icon: Phone,  lines: ['+225 07 08 42 55 01', '+225 05 04 59 47 69', '+225 07 47 11 15 70'] },
-    { icon: Mail,   lines: ['salemtechnology2000@gmail.com'] },
-  ]
-
-  return (
-    <footer style={{
-      background: 'linear-gradient(160deg, #080e22 0%, #0b1535 60%, #080e22 100%)',
-      fontFamily: "'DM Sans', sans-serif",
-      borderTop: '1px solid rgba(79,195,247,0.10)',
-      paddingTop: '4.5rem',
-    }}>
-      {/* Ligne décorative haut */}
-      <div style={{ height: 2, background: 'linear-gradient(90deg, transparent, #4fc3f7 40%, #60a5fa 60%, transparent)', marginBottom: 0 }} />
-
-      <Container>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '3rem',
-          padding: '3.5rem 0 3rem',
-        }}>
-          {/* Brand */}
-          <div>
-            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'1.2rem' }}>
-              <div style={{
-                width:38, height:38, borderRadius:'10px',
-                background:'linear-gradient(135deg,#4fc3f7,#60a5fa)',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                boxShadow:'0 4px 16px rgba(79,195,247,0.35)',
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                </svg>
-              </div>
-              <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'0.9rem', color:'#fff', letterSpacing:'0.01em' }}>
-                SALEM<span style={{ color:CYAN, fontWeight:300, marginLeft:4 }}>TECHNOLOGY</span>
-              </span>
-            </div>
-            <p style={{ color:'rgba(186,230,253,0.45)', fontSize:'0.81rem', lineHeight:1.8, maxWidth:'220px' }}>
-              Agence IT — développement web, mobile, vidéosurveillance et GPS trackers en Côte d'Ivoire depuis 2015.
-            </p>
-            {/* Social */}
-            <div style={{ display:'flex', gap:'8px', marginTop:'1.2rem' }}>
-              {['f', 'in', 'tw'].map(s => (
-                <div key={s} style={{
-                  width:32, height:32, borderRadius:'8px',
-                  background:'rgba(79,195,247,0.08)', border:'1px solid rgba(79,195,247,0.15)',
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  color:'rgba(186,230,253,0.5)', fontSize:'0.7rem', fontWeight:700,
-                  cursor:'pointer',
-                }}>{s}</div>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h4 style={{ color:'rgba(79,195,247,0.7)', fontWeight:700, fontSize:'0.72rem', marginBottom:'1.2rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>Navigation</h4>
-            <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-              {navLinks.map(l => (
-                <button key={l.href} onClick={()=>navigate(l.href)} style={{
-                  background:'none', border:'none', cursor:'pointer', textAlign:'left', padding:0,
-                  color:'rgba(186,230,253,0.45)', fontSize:'0.82rem', fontWeight:500,
-                  fontFamily:"'DM Sans',sans-serif", transition:'color 0.2s',
-                  display:'flex', alignItems:'center', gap:'6px',
-                }}
-                  onMouseEnter={e=>{e.currentTarget.style.color=CYAN}}
-                  onMouseLeave={e=>{e.currentTarget.style.color='rgba(186,230,253,0.45)'}}>
-                  <ArrowRight size={10} style={{opacity:0.4}}/> {l.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 style={{ color:'rgba(79,195,247,0.7)', fontWeight:700, fontSize:'0.72rem', marginBottom:'1.2rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>Services</h4>
-            <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-              {services.map(s => (
-                <span key={s} style={{ color:'rgba(186,230,253,0.45)', fontSize:'0.82rem', display:'flex', alignItems:'center', gap:'6px' }}>
-                  <span style={{ width:4, height:4, borderRadius:'50%', background:CYAN, display:'inline-block', opacity:0.6 }} />{s}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 style={{ color:'rgba(79,195,247,0.7)', fontWeight:700, fontSize:'0.72rem', marginBottom:'1.2rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>Contact</h4>
-            <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-              {contacts.map(({ icon: Icon, lines }) => (
-                <div key={lines[0]} style={{ display:'flex', alignItems:'flex-start', gap:'10px' }}>
-                  <div style={{ width:28, height:28, borderRadius:'8px', background:'rgba(79,195,247,0.1)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                    <Icon size={13} style={{ color:CYAN }} />
-                  </div>
-                  <div>
-                    {lines.map(l => <p key={l} style={{ margin:0, color:'rgba(186,230,253,0.45)', fontSize:'0.78rem', lineHeight:1.7 }}>{l}</p>)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div style={{
-          borderTop: '1px solid rgba(79,195,247,0.08)',
-          padding: '1.4rem 0',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: '0.5rem',
-        }}>
-          <p style={{ color:'rgba(186,230,253,0.25)', fontSize:'0.73rem', margin:0 }}>
-            © {year} Salem Technology · Tous droits réservés
-          </p>
-          <p style={{ color:'rgba(186,230,253,0.18)', fontSize:'0.7rem', margin:0 }}>
-            Abidjan, Côte d'Ivoire
-          </p>
-        </div>
-      </Container>
-    </footer>
   )
 }
 
@@ -562,31 +420,6 @@ const PortfolioDetail = () => {
               viewport={{ once:true, amount:0.05 }}
               style={{ display:'flex', flexDirection:'column', gap:'1.2rem', position:'sticky', top:'90px' }}
             >
-              {/* Infos projet */}
-              <motion.div variants={fadeUp} className="detail-card" style={{ padding:'1.6rem' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'1.4rem' }}>
-                  <div style={{ width:4, height:18, borderRadius:'4px', background:`linear-gradient(135deg,${color},#60a5fa)` }} />
-                  <h3 style={{ fontFamily:"'Space Grotesk',sans-serif", fontWeight:700, fontSize:'0.92rem', color:'#0b0f2a', margin:0 }}>Informations</h3>
-                </div>
-
-                <div style={{ display:'flex', flexDirection:'column' }}>
-                  {[
-                    { label:'Client',    value:project.client },
-                    { label:'Catégorie', value:project.category },
-                    { label:'Statut',    value:project.is_confidential?'Confidentiel':'Public' },
-                  ].map((row, i, arr) => (
-                    <div key={row.label} style={{
-                      display:'flex', justifyContent:'space-between', alignItems:'center', gap:'12px',
-                      padding:'0.85rem 0',
-                      borderBottom: i < arr.length-1 ? '1px solid #f1f5f9' : 'none',
-                    }}>
-                      <span style={{ color:'#94a3b8', fontSize:'0.75rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.07em', flexShrink:0 }}>{row.label}</span>
-                      <span style={{ color:'#0b0f2a', fontSize:'0.85rem', fontWeight:600, textAlign:'right' }}>{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-
               {/* Liens */}
               {!project.is_confidential && links.length > 0 && (
                 <motion.div variants={fadeUp} className="detail-card" style={{ padding:'1.6rem' }}>
