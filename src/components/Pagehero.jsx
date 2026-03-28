@@ -47,7 +47,7 @@ const PAGE_META = {
     badge: 'Notre histoire',
     title: 'Qui sommes-',
     titleAccent: 'nous',
-    description: 'Une équipe passionnée au service de votre transformation numérique depuis plus de 8 ans en Côte d\'Ivoire et au-delà.',
+    description: 'Une équipe passionnée au service de votre transformation numérique depuis plus de 10 ans en Côte d\'Ivoire.',
   },
   '/services': {
     badge: 'Ce que nous faisons',
@@ -64,7 +64,7 @@ const PAGE_META = {
   '/portfolio': {
     badge: 'Notre travail',
     title: 'Nos ',
-    titleAccent: 'réalisations',
+    titleAccent: 'solutions et réalisations',
     description: 'Découvrez les projets que nous avons menés à bien pour nos clients à travers l\'Afrique et au-delà.',
   },
   '/news': {

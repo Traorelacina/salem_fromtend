@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import Particles from 'react-tsparticles'
 import { loadSlim } from 'tsparticles-slim'
 import heroImg from '../assets/images/image_salem.png'
-import ServicesDescription from './ServicesDescription'
 import Clients from './Clients'
 
 function getParticleCount() {
@@ -62,7 +61,7 @@ function Counter({ target, suffix, inView }) {
 }
 
 const STATS = [
-  { value: 50, suffix: '+', label: 'Projets livrés' },
+  { value: 100, suffix: '+', label: 'Projets livrés' },
   { value: 10, suffix: '+', label: "Années d'expérience" },
   { value: 98, suffix: '%', label: 'Clients satisfaits' },
 ]
@@ -125,29 +124,7 @@ export default function HomeHero() {
           {/* Texte */}
           <div style={{ flex: '1 1 360px', display: 'flex', flexDirection: 'column', gap: '1rem', fontFamily: "'DM Sans',sans-serif" }}>
 
-            {/* ── NOM DE LA SOCIÉTÉ ── */}
-            <div style={fi('0.1s')}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '0.2rem' }}>
-                {/* Icône S stylisée */}
-                <div style={{
-                  width: '32px', height: '32px', borderRadius: '8px',
-                  background: 'linear-gradient(135deg,#4fc3f7,#38bdf8)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: "'Space Grotesk',sans-serif", fontWeight: 800,
-                  fontSize: '1rem', color: '#0b1a3a', flexShrink: 0,
-                  boxShadow: '0 4px 14px rgba(79,195,247,0.4)',
-                }}>S</div>
-                <span style={{
-                  fontFamily: "'Space Grotesk',sans-serif",
-                  fontWeight: 700,
-                  fontSize: '1.05rem',
-                  letterSpacing: '0.04em',
-                  color: 'white',
-                }}>
-                  SALEM <span style={{ color: '#4fc3f7' }}>TECHNOLOGY</span>
-                </span>
-              </div>
-            </div>
+         
 
             {/* Badge agence */}
             <div style={{ ...fi('0.3s'), display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '4px 14px', borderRadius: '9999px', border: '1px solid rgba(79,195,247,0.32)', background: 'rgba(79,195,247,0.07)', color: '#4fc3f7', fontSize: '0.68rem', letterSpacing: '0.13em', textTransform: 'uppercase', width: 'fit-content' }}>
@@ -165,7 +142,8 @@ export default function HomeHero() {
             {/* Description */}
             <div style={fi('0.6s')}>
               <p style={{ fontSize: '0.88rem', lineHeight: 1.75, color: 'rgba(186,230,253,0.72)', margin: 0, maxWidth: '380px' }}>
-                Conception de logiciels, sites web, applications mobiles et infrastructures réseau — pour entreprises et institutions.
+                Conception de logiciel, sites web, applications mobiles, vidéosurveillance, gps 
+tracker – pour entreprises et institutions.
               </p>
             </div>
 
@@ -232,9 +210,6 @@ export default function HomeHero() {
         </div>
         <style>{`@media(max-width:580px){ .stats-grid{ grid-template-columns:1fr !important; } }`}</style>
       </section>
-
-      {/* ══ 3. SERVICES ══ */}
-      <ServicesDescription />
 
       {/* ══ 4. CLIENTS ══ */}
       <Clients />

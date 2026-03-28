@@ -1,24 +1,16 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
+import logoImg from '../assets/images/salem_logo.jpeg'
 
 const navLinks = [
-  { label: 'Accueil',          href: '/'          },
-  { label: 'Qui sommes-nous',  href: '/about'     },
-  { label: 'Nos services',     href: '/services'  },
-  { label: 'Nos solutions',    href: '/solutions' },
-  { label: 'Nos réalisations', href: '/portfolio' },
-  { label: 'News',             href: '/news'      },
-  { label: 'Contact',          href: '/contact'   },
+  { label: 'Accueil',                      href: '/',         hidden: false },
+  { label: 'Qui sommes-nous',              href: '/about',    hidden: false },
+  { label: 'Nos services',                 href: '/services', hidden: false },
+  { label: 'Nos solutions et réalisations', href: '/portfolio',hidden: false },
+  { label: 'News',                         href: '/news',     hidden: true  },
+  { label: 'Contact',                      href: '/contact',  hidden: false },
 ]
-
-/* ── Logo Icon ── */
-const BoltIcon = ({ size = 16 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-  </svg>
-)
 
 /* ── Hamburger / Close animated ── */
 const HamburgerIcon = ({ open }) => (
@@ -56,7 +48,10 @@ const Header = () => {
   const navigate  = useNavigate()
   const location  = useLocation()
 
-  const isHeroPage = location.pathname === '/'
+  /* ── Shared tokens ── */
+  const CYAN  = '#4fc3f7'
+  const NAVY  = '#0b0f2a'
+  const BLUE  = '#60a5fa'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -68,14 +63,6 @@ const Header = () => {
   useEffect(() => { setMobileOpen(false) }, [location.pathname])
 
   const handleNav = (href) => { setMobileOpen(false); navigate(href) }
-
-  /* The header is "dark" when on hero page + not scrolled */
-  const isDark = isHeroPage && !scrolled
-
-  /* ── Shared token ── */
-  const CYAN  = '#4fc3f7'
-  const NAVY  = '#0b0f2a'
-  const BLUE  = '#60a5fa'
 
   return (
     <>
@@ -121,15 +108,10 @@ const Header = () => {
           width: 20px;
         }
 
-        /* Dark mode nav */
-        .st-nav-btn.dark-mode       { color: rgba(186,230,253,0.65); }
-        .st-nav-btn.dark-mode:hover { color: #fff; background: rgba(255,255,255,0.07); }
-        .st-nav-btn.dark-mode.active{ color: #fff; background: rgba(79,195,247,0.12); }
-
-        /* Light mode nav */
-        .st-nav-btn.light-mode       { color: #4b5563; }
-        .st-nav-btn.light-mode:hover { color: ${NAVY}; background: rgba(79,195,247,0.07); }
-        .st-nav-btn.light-mode.active{ color: ${NAVY}; background: rgba(79,195,247,0.10); font-weight: 700; }
+        /* Light mode nav — toujours utilisé */
+        .st-nav-btn       { color: #4b5563; }
+        .st-nav-btn:hover { color: ${NAVY}; background: rgba(79,195,247,0.07); }
+        .st-nav-btn.active{ color: ${NAVY}; background: rgba(79,195,247,0.10); font-weight: 700; }
 
         /* CTA button */
         .st-cta {
@@ -179,28 +161,21 @@ const Header = () => {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-          transition: 'background 0.45s ease, padding 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease',
-          /* ── Dynamic background ── */
-          background: isDark
-            ? 'rgba(11,15,42,0.72)'
-            : 'rgba(255,255,255,0.97)',
+          transition: 'padding 0.4s ease, box-shadow 0.4s ease',
+          /* ── Fond blanc permanent ── */
+          background: 'rgba(255,255,255,0.97)',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
-          borderBottom: isDark
-            ? '1px solid rgba(255,255,255,0.07)'
-            : '1px solid rgba(0,0,0,0.07)',
-          boxShadow: isDark
-            ? 'none'
-            : '0 4px 32px rgba(0,0,0,0.08)',
-          padding: scrolled ? '0' : '0',
+          borderBottom: '1px solid rgba(0,0,0,0.07)',
+          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.08)' : 'none',
         }}
       >
-        {/* Thin top glow line — visible when scrolled on light */}
-        <div className={`st-accent-line ${scrolled && !isDark ? 'show' : ''}`} />
+        {/* Thin top glow line — visible quand scrolled */}
+        <div className={`st-accent-line ${scrolled ? 'show' : ''}`} />
 
         <div style={{
           maxWidth: '1200px', margin: '0 auto',
-          padding: scrolled ? '14px 2rem' : '20px 2rem',
+          padding: scrolled ? '7px 2rem' : '13px 2rem',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           gap: '1.5rem',
           transition: 'padding 0.4s ease',
@@ -215,41 +190,30 @@ const Header = () => {
               flexShrink: 0,
             }}
           >
-            {/* Icon badge */}
-            <div style={{
-              width: 36, height: 36, borderRadius: '10px', flexShrink: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'linear-gradient(135deg, #4fc3f7, #60a5fa)',
-              boxShadow: '0 4px 14px rgba(79,195,247,0.35)',
-              transition: 'box-shadow 0.3s',
-            }}>
-              <BoltIcon size={17} />
-            </div>
-
-            {/* Wordmark */}
-            <span style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: '0.9rem',
-              letterSpacing: '0.01em',
-              color: isDark ? '#fff' : NAVY,
-              transition: 'color 0.3s',
-            }}>
-              SALEM<span style={{ color: CYAN, fontWeight: 300, marginLeft: 4 }}>TECHNOLOGY</span>
-            </span>
+            {/* Logo image */}
+            <img
+              src={logoImg}
+              alt="Salem Technology"
+              style={{
+                height: '56px',
+                width: 'auto',
+                display: 'block',
+                objectFit: 'contain',
+              }}
+            />
           </button>
 
           {/* ══ DESKTOP NAV ══ */}
           <nav style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, justifyContent: 'center' }}
                className="desktop-nav">
             <style>{`@media(max-width:1024px){ .desktop-nav{ display:none !important; } }`}</style>
-            {navLinks.map((link) => {
+            {navLinks.filter(l => !l.hidden).map((link) => {
               const isActive = location.pathname === link.href
               return (
                 <button
                   key={link.href}
                   onClick={() => handleNav(link.href)}
-                  className={`st-nav-btn ${isDark ? 'dark-mode' : 'light-mode'} ${isActive ? 'active' : ''}`}
+                  className={`st-nav-btn ${isActive ? 'active' : ''}`}
                 >
                   {link.label}
                   {isActive && (
@@ -269,9 +233,8 @@ const Header = () => {
             })}
           </nav>
 
-          {/* ══ CTA + HAMBURGER ══ */}
+          {/* ══ HAMBURGER ══ */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-            {/* Hamburger */}
             <button
               onClick={() => setMobileOpen(v => !v)}
               aria-label="Menu"
@@ -280,14 +243,15 @@ const Header = () => {
                 display: 'none',
                 background: 'transparent', border: 'none', cursor: 'pointer',
                 padding: '8px', borderRadius: '10px',
-                color: isDark ? '#fff' : NAVY,
+                /* Toujours en NAVY */
+                color: NAVY,
                 transition: 'background 0.2s',
               }}
             >
               <style>{`
                 .hamburger-btn { display: flex !important; }
                 @media(min-width:1025px){ .hamburger-btn{ display:none !important; } }
-                .hamburger-btn:hover { background: ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'} !important; }
+                .hamburger-btn:hover { background: rgba(0,0,0,0.06) !important; }
               `}</style>
               <HamburgerIcon open={mobileOpen} />
             </button>
@@ -312,7 +276,7 @@ const Header = () => {
               }}
             >
               <div style={{ padding: '12px 20px 20px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                {navLinks.map((link, i) => (
+                {navLinks.filter(l => !l.hidden).map((link, i) => (
                   <motion.button
                     key={link.href}
                     initial={{ opacity: 0, x: -12 }}
@@ -324,7 +288,6 @@ const Header = () => {
                     {link.label}
                   </motion.button>
                 ))}
-
               </div>
             </motion.div>
           )}

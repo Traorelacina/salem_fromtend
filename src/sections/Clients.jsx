@@ -7,14 +7,14 @@ const ClientLogo = ({ client }) => (
   <div className="flex-shrink-0 mx-6 flex items-center justify-center">
     <div
       style={{
-        width: '90px', height: '90px', borderRadius: '50%',
+        width: '120px', height: '120px', borderRadius: '50%',
         background: '#ffffff',
         border: '1.5px solid #e2e8f0',
         boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden', flexShrink: 0,
         transition: 'transform 0.3s, box-shadow 0.3s',
-        padding: '14px',
+        padding: '18px',
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.13)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.07)' }}
@@ -26,7 +26,7 @@ const ClientLogo = ({ client }) => (
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
       ) : (
-        <span style={{ fontWeight: 700, fontSize: '1rem', color: '#64748b', letterSpacing: '0.05em' }}>
+        <span style={{ fontWeight: 700, fontSize: '1.2rem', color: '#64748b', letterSpacing: '0.05em' }}>
           {client.name.slice(0, 2).toUpperCase()}
         </span>
       )}
@@ -78,8 +78,12 @@ const Clients = () => {
     }}>
       <Container>
         <p style={{
-          textAlign: 'center', fontSize: '0.62rem', fontWeight: 700,
-          color: '#94a3b8', letterSpacing: '0.2em', textTransform: 'uppercase',
+          textAlign: 'center',
+          fontSize: '1rem',
+          fontWeight: 800,
+          color: '#0b0f2a',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
           marginBottom: '2.5rem',
         }}>
           ❖ &nbsp;Ils nous font confiance&nbsp; ❖
