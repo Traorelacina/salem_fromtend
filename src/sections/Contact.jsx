@@ -5,8 +5,6 @@ import Container from '../components/Container'
 import SectionTitle from '../components/SectionTitle'
 import { fadeLeft, fadeRight } from '../animations/fadeAnimations'
 
-// Même pattern que useApi.js → VITE_API_URL = http://localhost:8000/api
-// Route complète : /api/v1/contact  →  VITE_API_URL + /v1/contact
 const API = import.meta.env.VITE_API_URL ?? '/api'
 const CONTACT_URL = `${API}/v1/contact`
 
@@ -15,7 +13,7 @@ const contactInfo = [
     icon: MapPin,
     label: 'Adresse',
     value: "Abidjan, Côte d'Ivoire",
-    sub: 'Riviera, Cocody',
+    sub: 'Plateau Dokui, en face de la SODECI',
     color: '#0D6EFD',
   },
   {
@@ -23,8 +21,8 @@ const contactInfo = [
     label: 'Téléphone',
     lines: [
       { display: '+225 07 08 42 55 01', href: 'tel:+2250708425501' },
-      { display: '+225 07 08 22 19 01', href: 'tel:+2250708221901' },
       { display: '+225 05 04 59 47 69', href: 'tel:+2250504594769' },
+      { display: '+225 07 47 11 15 70', href: 'tel:+2250747111570' },
     ],
     sub: 'Lun – Ven, 8h – 18h',
     color: '#00C2FF',
@@ -154,20 +152,42 @@ const Contact = () => {
               </motion.div>
             ))}
 
-            {/* Map */}
+            {/* Map Google */}
             <div
               className="rounded-2xl overflow-hidden border border-gray-100"
               style={{ height: 220, boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}
             >
               <iframe
-                title="Salem Technology - Abidjan"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-3.9785,5.3364,-3.9385,5.3664&layer=mapnik"
+                title="Salem Technology - Plateau Dokui, Abidjan"
+                src="https://www.google.com/maps?q=5.4031216,-4.0065703&z=17&hl=fr&output=embed"
                 width="100%"
                 height="220"
                 style={{ border: 0 }}
+                allowFullScreen
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
+
+            {/* Lien ouvrir dans Google Maps */}
+            <a
+              href="https://www.google.com/maps?q=5.4031216,-4.0065703&z=17&hl=fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                color: '#0D6EFD',
+                textDecoration: 'none',
+                marginTop: '-0.5rem',
+              }}
+            >
+              <MapPin size={14} />
+              Ouvrir dans Google Maps
+            </a>
           </motion.div>
 
           {/* ── Right : Form ── */}
@@ -269,6 +289,8 @@ const Contact = () => {
                         <option>Application mobile</option>
                         <option>Logiciel de gestion</option>
                         <option>Réseaux informatiques</option>
+                        <option>Vidéosurveillance</option>
+                        <option>GPS Tracker</option>
                         <option>Marketing digital</option>
                         <option>Autre</option>
                       </select>

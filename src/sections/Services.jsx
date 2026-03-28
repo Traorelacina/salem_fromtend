@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Code2, Globe, Smartphone, Network, TrendingUp, Shield } from 'lucide-react'
+import { Code2, Globe, Smartphone, Network, TrendingUp, Shield, Camera, MapPin } from 'lucide-react'
 import Container from '../components/Container'
 import SectionTitle from '../components/SectionTitle'
 import {
@@ -36,6 +36,14 @@ const services = [
     bg: '#F0EAFF',
   },
   {
+    icon: Camera,
+    title: 'Vidéosurveillance',
+    description: 'Installation et configuration de systèmes de surveillance pour particuliers, entreprises et institutions.',
+    features: ['Caméra IP', 'Analogique', 'Vidéophone'],
+    color: '#0EA5E9',
+    bg: '#E0F4FF',
+  },
+  {
     icon: Network,
     title: 'Réseaux informatiques',
     description: 'Réseaux locaux, serveurs dédiés et infogérance complète de votre système informatique.',
@@ -46,7 +54,7 @@ const services = [
   {
     icon: TrendingUp,
     title: 'Marketing digital',
-    description: 'Stratégies digitales pour booster votre visibilité et augmenter votre chiffre d\'affaires.',
+    description: "Stratégies digitales pour booster votre visibilité et augmenter votre chiffre d'affaires.",
     features: ['Réseaux sociaux', 'SEO / SEA', 'Analytics'],
     color: '#F59E0B',
     bg: '#FFF8E6',
@@ -58,6 +66,14 @@ const services = [
     features: ['Audit système', 'Stratégie digitale', 'Formation'],
     color: '#EF4444',
     bg: '#FEF0F0',
+  },
+  {
+    icon: MapPin,
+    title: 'GPS Trackers',
+    description: 'Solutions de géolocalisation en temps réel pour sécuriser et suivre vos équipements et flotte.',
+    features: ['Véhicule', 'Moto', 'Bateau'],
+    color: '#16A34A',
+    bg: '#DCFCE7',
   },
 ]
 
@@ -134,7 +150,7 @@ const Services = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-center mt-12">
 
-          {/* ── Colonne gauche ── */}
+          {/* ── Colonne gauche : 4 premiers services ── */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -142,12 +158,12 @@ const Services = () => {
             viewport={{ once: true, amount: 0.15 }}
             className="flex flex-col gap-4"
           >
-            {services.slice(0, 3).map((s) => (
+            {services.slice(0, 4).map((s) => (
               <ServiceCard key={s.title} service={s} />
             ))}
           </motion.div>
 
-          {/* ── Colonne centrale — image améliorée ── */}
+          {/* ── Colonne centrale — image ── */}
           <div className="hidden lg:flex items-center justify-center">
             <motion.div
               variants={zoomIn}
@@ -159,12 +175,7 @@ const Services = () => {
               <motion.div
                 animate={{ y: [0, -14, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{
-                  position: 'relative',
-                  /* Réduit à 78% de la colonne */
-                  width: '78%',
-                  margin: '0 auto',
-                }}
+                style={{ position: 'relative', width: '78%', margin: '0 auto' }}
               >
                 {/* Glow derrière l'image */}
                 <div style={{
@@ -175,7 +186,6 @@ const Services = () => {
                   zIndex: 0,
                 }} />
 
-                {/* Image avec masque plus agressif — fondu dès 20% du centre */}
                 <img
                   src={servicesImg}
                   alt="Nos services Salem Technology"
@@ -186,7 +196,6 @@ const Services = () => {
                     display: 'block',
                     maxHeight: '400px',
                     objectFit: 'contain',
-                    /* Masque plus serré : zone nette réduite, fondu plus tôt et plus fort */
                     WebkitMaskImage: 'radial-gradient(ellipse 58% 62% at 50% 48%, black 15%, rgba(0,0,0,0.55) 38%, rgba(0,0,0,0.15) 58%, transparent 72%)',
                     maskImage:       'radial-gradient(ellipse 58% 62% at 50% 48%, black 15%, rgba(0,0,0,0.55) 38%, rgba(0,0,0,0.15) 58%, transparent 72%)',
                     filter: 'drop-shadow(0 0 18px rgba(13,110,253,0.15))',
@@ -196,7 +205,7 @@ const Services = () => {
             </motion.div>
           </div>
 
-          {/* ── Colonne droite ── */}
+          {/* ── Colonne droite : 4 derniers services ── */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -204,7 +213,7 @@ const Services = () => {
             viewport={{ once: true, amount: 0.15 }}
             className="flex flex-col gap-4"
           >
-            {services.slice(3, 6).map((s) => (
+            {services.slice(4, 8).map((s) => (
               <ServiceCard key={s.title} service={s} />
             ))}
           </motion.div>
