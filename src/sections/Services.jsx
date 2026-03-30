@@ -70,8 +70,8 @@ const services = [
   {
     icon: MapPin,
     title: 'GPS Trackers',
-    description: 'Solutions de géolocalisation en temps réel pour sécuriser et suivre vos équipements et flotte.',
-    features: ['Véhicule', 'Moto', 'Bateau'],
+    description: 'Solutions de géolocalisation en temps réel pour sécuriser et suivre vos équipements et flottes.',
+    features: ['Voiture', 'Moto', 'Bateau'],
     color: '#16A34A',
     bg: '#DCFCE7',
   },
