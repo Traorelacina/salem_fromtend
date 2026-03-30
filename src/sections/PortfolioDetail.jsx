@@ -16,6 +16,21 @@ import { fadeUp, staggerContainer } from '../animations/fadeAnimations'
 const API = import.meta.env.VITE_API_URL ?? '/api'
 const PALETTE = ['#0D6EFD', '#10B981', '#7C3AED', '#F59E0B', '#EF4444', '#059669']
 
+/**
+ * Convertit du texte brut en HTML sécurisé :
+ * - les blocs séparés par une ligne vide → <p>
+ * - les sauts de ligne simples → <br>
+ * - si le texte contient déjà des balises HTML, on le retourne tel quel
+ */
+const plainTextToHtml = (text = '') => {
+  if (!text) return ''
+  if (/<[a-z][\s\S]*>/i.test(text)) return text
+  return text
+    .split(/\n{2,}/)
+    .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+    .join('')
+}
+
 /* ══════════════════════════════════════════════════════
    LIGHTBOX
 ══════════════════════════════════════════════════════ */
@@ -277,9 +292,10 @@ const PortfolioDetail = () => {
 
         /* ── Prose ── */
         .prose { font-size: 0.94rem; line-height: 1.9; color: #3d4c62; }
+        .prose p  { margin: 0 0 1rem 0; }
+        .prose p:last-child { margin-bottom: 0; }
         .prose h2 { font-family:'Bricolage Grotesque',sans-serif; font-size:1.25rem; font-weight:700; color:#0c1128; margin:1.8rem 0 0.7rem; }
         .prose h3 { font-family:'Bricolage Grotesque',sans-serif; font-size:1.05rem; font-weight:700; color:#1a2340; margin:1.4rem 0 0.5rem; }
-        .prose p  { margin-bottom: 1rem; }
         .prose ul { padding-left:0; list-style:none; }
         .prose ul li { padding-left:1.5rem; position:relative; margin-bottom:0.5rem; }
         .prose ul li::before { content:'▸'; position:absolute; left:0; color:#0D6EFD; font-size:0.7rem; top:0.35rem; }
@@ -474,7 +490,10 @@ const PortfolioDetail = () => {
                     À propos du projet
                   </h2>
                 </div>
-                <div className="prose" dangerouslySetInnerHTML={{ __html: project.content }} />
+                <div
+                  className="prose"
+                  dangerouslySetInnerHTML={{ __html: plainTextToHtml(project.content) }}
+                />
               </div>
             )}
           </motion.div>
