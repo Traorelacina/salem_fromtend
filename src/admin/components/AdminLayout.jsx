@@ -8,11 +8,10 @@ import {
   ChevronLeft, ChevronRight, Bell,
 } from 'lucide-react'
 
-// ✅ NAV sans "Services"
+
 const NAV = [
   { to: '/admin',           label: 'Tableau de bord', Icon: LayoutDashboard, exact: true },
-  { to: '/admin/solutions', label: 'Solutions',        Icon: Layers },
-  { to: '/admin/portfolio', label: 'Réalisations',     Icon: Briefcase },
+  { to: '/admin/portfolio', label: 'Solution et   Réalisations',     Icon: Briefcase },
   { to: '/admin/clients',   label: 'Clients',          Icon: Users },
   { to: '/admin/news',      label: 'Articles',         Icon: Newspaper },
   { to: '/admin/contacts',  label: 'Messages',         Icon: MessageSquare },

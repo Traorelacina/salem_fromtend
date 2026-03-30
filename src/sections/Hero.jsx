@@ -6,6 +6,7 @@ import heroImg from '../assets/images/image_salem.png'
 import ServicesDescription from './ServicesDescription'
 import Services from './Services'
 import Clients from './Clients'
+import Porfolio from './Portfolio'
 
 function getParticleCount() {
   if (typeof window === 'undefined') return 90
@@ -214,7 +215,7 @@ export default function HomeHero() {
 
       {/* ══ 3. SERVICES ══ */}
       <Services />
-
+       <Porfolio  />
       {/* ══ 4. CLIENTS ══ */}
       <Clients />
       
