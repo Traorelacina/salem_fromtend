@@ -53,8 +53,8 @@ const PAGE_META = {
     badge: 'Ce que nous faisons',
     title: 'Nos ',
     titleAccent: 'services',
-    description: 'Développement web, mobile, logiciels sur mesure et infrastructures réseau — pour accélérer votre croissance.',
-  },
+    description: 'Logiciels de gestion, sites web, applications mobiles, vidéosurveillance, réseaux informatiques, marketing digital, audit IT et GPS trackers — des solutions complètes pour accélérer votre croissance.',
+},
   '/solutions': {
     badge: 'Notre expertise',
     title: 'Nos ',

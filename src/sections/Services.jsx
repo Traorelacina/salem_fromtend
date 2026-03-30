@@ -15,7 +15,7 @@ const services = [
     icon: Code2,
     title: 'Logiciels de gestion',
     description: 'Paie, Facturation, Stock, Immobilisations — logiciels opérationnels ou sur mesure selon votre métier.',
-    features: ['Gestion de stock', 'Facturation', 'Paie & RH'],
+    features: ['Progiciel', 'Logiciel sur mesure', 'ERP/PGI'],
     color: '#0D6EFD',
     bg: '#EBF3FF',
   },
@@ -141,11 +141,11 @@ const Services = () => {
           viewport={{ once: true, amount: 0.5 }}
         >
           <SectionTitle
-            subtitle="Nos services"
-            title="Des solutions digitales complètes"
-            description="De la conception au déploiement, nous couvrons tous les aspects du développement digital pour faire croître votre entreprise."
-            center
-          />
+  subtitle="Notre expertise"
+  title="Des solutions digitales 360°"
+  description="Logiciels, sites web, applications, vidéosurveillance, réseaux, marketing, audit et GPS tracking — de la conception au déploiement, nous couvrons tous vos besoins IT."
+  center
+/>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-center mt-12">
