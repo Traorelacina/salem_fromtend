@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'Nos services',                 href: '/services', hidden: false },
   { label: 'Nos solutions et réalisations', href: '/portfolio',hidden: false },
   { label: 'News',                         href: '/news',     hidden: true  },
-  { label: 'Nos Contact',                      href: '/contact',  hidden: false },
+  { label: 'Nos Contacts',                      href: '/contact',  hidden: false },
 ]
 
 /* ── Hamburger / Close animated ── */
