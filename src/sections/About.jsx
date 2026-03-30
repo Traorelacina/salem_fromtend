@@ -229,7 +229,7 @@ const About = () => {
             <SectionTitle
               subtitle="À propos de nous"
               title="Une Agence IT au cœur de l'Afrique digitale depuis 2015"
-              description="SALEM TECHNOLOGY est spécialisée dans la conception et le développement d'applications Web, Mobile et PC, avec plusieurs applications déjà déployées dans différents secteurs d'activités. La Vidéosurveillance et l'installation de GPS trackers font également partie de son champ d'action."
+              description="SALEM TECHNOLOGY est spécialisée dans la conception et le développement d'applications Web, Mobile et Desktop, avec plusieurs solutions déjà déployées dans divers secteurs d'activité. La vidéosurveillance ainsi que l'installation de GPS trackers font également partie de notre champ d'action."
             />
 
             <motion.ul

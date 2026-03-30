@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
    Remplacez ce numéro par votre numéro WhatsApp
    Format international SANS le + ni les espaces
 ───────────────────────────────────────────── */
-const WHATSAPP_NUMBER = '2250708425501'
+const WHATSAPP_NUMBER = '2250504594769'
 const WHATSAPP_MESSAGE = encodeURIComponent(
   'Bonjour Salem Technology, je souhaite obtenir des informations sur vos services.'
 )
