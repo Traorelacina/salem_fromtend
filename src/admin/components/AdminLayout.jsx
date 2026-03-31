@@ -3,18 +3,18 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { injectAdminCSS } from '../components/AdminUI'
 import {
-  LayoutDashboard, Layers, Briefcase,
+  LayoutDashboard, Briefcase,
   Users, Newspaper, MessageSquare, LogOut,
-  ChevronLeft, ChevronRight, Bell,
+  ChevronLeft, ChevronRight, Bell, Share2,
 } from 'lucide-react'
 
-
 const NAV = [
-  { to: '/admin',           label: 'Tableau de bord', Icon: LayoutDashboard, exact: true },
-  { to: '/admin/portfolio', label: 'Solution et   Réalisations',     Icon: Briefcase },
-  { to: '/admin/clients',   label: 'Clients',          Icon: Users },
-  { to: '/admin/news',      label: 'Articles',         Icon: Newspaper },
-  { to: '/admin/contacts',  label: 'Messages',         Icon: MessageSquare },
+  { to: '/admin',           label: 'Tableau de bord',         Icon: LayoutDashboard, exact: true },
+  { to: '/admin/portfolio', label: 'Solutions & Réalisations', Icon: Briefcase },
+  { to: '/admin/clients',   label: 'Clients',                 Icon: Users },
+  { to: '/admin/news',      label: 'Articles',                Icon: Newspaper },
+  { to: '/admin/contacts',  label: 'Messages',                Icon: MessageSquare },
+  { to: '/admin/socials',   label: 'Réseaux sociaux',         Icon: Share2 },
 ]
 
 export default function AdminLayout() {
@@ -22,7 +22,6 @@ export default function AdminLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleLogout = async () => { await logout(); navigate('/admin/login') }
   const W = collapsed ? 70 : 240
@@ -76,7 +75,7 @@ export default function AdminLayout() {
               transition: 'all 0.15s', whiteSpace: 'nowrap', overflow: 'hidden',
             })}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'white' }}
-            onMouseLeave={e => { /* NavLink active style takes over */ }}
+            onMouseLeave={e => {}}
           >
             <Icon size={16} style={{ flexShrink: 0 }} />
             {!collapsed && <span>{label}</span>}
@@ -114,12 +113,7 @@ export default function AdminLayout() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      {/* Desktop sidebar */}
-      <div style={{ display: 'none', flexShrink: 0 }} className="admin-sidebar-desktop">
-        {sidebarContent}
-      </div>
-
-      {/* Always show sidebar on desktop */}
+      {/* Sidebar sticky */}
       <div style={{ flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
         {sidebarContent}
       </div>
@@ -133,7 +127,7 @@ export default function AdminLayout() {
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text)', fontFamily: "'Lexend', sans-serif" }}>{user?.name ?? 'Administrateur'}</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <button style={{ width: '36px', height: '36px', borderRadius: '9px', background: '#f8fafc', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-2)', position: 'relative', transition: 'all 0.15s' }}
+            <button style={{ width: '36px', height: '36px', borderRadius: '9px', background: '#f8fafc', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-2)', transition: 'all 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-green-lt)'; e.currentTarget.style.borderColor = 'var(--border-2)' }}
               onMouseLeave={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = 'var(--border)' }}>
               <Bell size={15} />

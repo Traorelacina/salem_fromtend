@@ -1,10 +1,44 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram, Twitter, ArrowRight } from 'lucide-react'
+import {
+  MapPin, Phone, Mail, ArrowRight,
+  Facebook, Linkedin, Instagram, Twitter,
+  Youtube, Globe, Send, Music2, Share2,
+} from 'lucide-react'
 import Container from './Container'
+
+const API = import.meta.env.VITE_API_URL ?? '/api'
+
+// ── Map icon key → composant Lucide ──────────────────────────
+const ICON_MAP = {
+  facebook:  Facebook,
+  linkedin:  Linkedin,
+  instagram: Instagram,
+  twitter:   Twitter,
+  youtube:   Youtube,
+  tiktok:    Music2,
+  telegram:  Send,
+  whatsapp:  Share2,
+  website:   Globe,
+}
+
+function SocialIcon({ iconKey, size = 17 }) {
+  const Icon = ICON_MAP[iconKey] ?? Globe
+  return <Icon size={size} />
+}
 
 const Footer = () => {
   const year = new Date().getFullYear()
+  const [socials, setSocials] = useState([])
+
+  // Fetch socials dynamiques depuis l'API publique
+  useEffect(() => {
+    fetch(`${API}/v1/socials`, { headers: { Accept: 'application/json' } })
+      .then(r => r.json())
+      .then(d => setSocials(d.data ?? []))
+      .catch(() => {})
+  }, [])
 
   const quickLinks = [
     { label: 'Accueil',                       to: '/'          },
@@ -21,13 +55,6 @@ const Footer = () => {
     'Réseaux informatiques',
     'Vidéosurveillance',
     'GPS Trackers',
-  ]
-
-  const socials = [
-    { icon: <Facebook  size={18} />, href: '#', label: 'Facebook'  },
-    { icon: <Linkedin  size={18} />, href: '#', label: 'LinkedIn'  },
-    { icon: <Instagram size={18} />, href: '#', label: 'Instagram' },
-    { icon: <Twitter   size={18} />, href: '#', label: 'Twitter'   },
   ]
 
   const phoneNumbers = [
@@ -53,18 +80,49 @@ const Footer = () => {
               <p className="text-blue-200/70 text-sm leading-relaxed mb-6">
                 Agence IT spécialisée dans le développement web, mobile, vidéosurveillance et GPS trackers. Votre partenaire digital de confiance en Côte d'Ivoire depuis 2015.
               </p>
-              <div className="flex gap-3">
-                {socials.map((s) => (
-                  <motion.a
-                    key={s.label}
-                    href={s.href}
-                    whileHover={{ y: -3, scale: 1.1 }}
-                    aria-label={s.label}
-                    className="w-9 h-9 rounded-lg bg-white/10 hover:bg-primary flex items-center justify-center text-white/70 hover:text-white transition-all duration-300"
-                  >
-                    {s.icon}
-                  </motion.a>
-                ))}
+
+              {/* ── Réseaux sociaux dynamiques ── */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {socials.length > 0 ? (
+                  socials.map(social => (
+                    <motion.a
+                      key={social.id}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.name}
+                      title={social.name}
+                      whileHover={{ y: -3, scale: 1.1 }}
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: `${social.color ?? '#ffffff'}18`,
+                        border: `1px solid ${social.color ?? '#ffffff'}28`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: social.color ?? 'rgba(255,255,255,0.7)',
+                        transition: 'background 0.2s, border-color 0.2s',
+                        textDecoration: 'none',
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}30`
+                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}50`
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}18`
+                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}28`
+                      }}
+                    >
+                      <SocialIcon iconKey={social.icon} size={17} />
+                    </motion.a>
+                  ))
+                ) : (
+                  <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                    Aucun réseau configuré
+                  </p>
+                )}
               </div>
             </div>
 
@@ -125,14 +183,14 @@ const Footer = () => {
                 {/* Téléphones */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <Phone size={16} className="text-secondary mt-0.5 flex-shrink-0" />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     {phoneNumbers.map((p) => (
                       <a
                         key={p.href}
                         href={p.href}
                         style={{
                           fontFamily: "'DM Mono', 'Roboto Mono', 'Courier New', monospace",
-                          fontSize: '1rem',
+                          fontSize: '0.875rem',
                           fontWeight: 500,
                           letterSpacing: '0.03em',
                           whiteSpace: 'nowrap',

@@ -32,6 +32,7 @@ import AdminPortfolio    from './admin/pages/AdminPortfolio'
 import AdminClients      from './admin/pages/AdminClients'
 import AdminNews         from './admin/pages/AdminNews'
 import AdminContacts     from './admin/pages/AdminContacts'
+import AdminSocials      from './admin/pages/Adminsocials'
 
 // ── Scroll to top on every route change ──────────────────────
 function ScrollToTop() {
@@ -65,8 +66,6 @@ function PageWrapper({ children, showPageHero = false }) {
 }
 
 // ── Public layout wrapper ─────────────────────────────────
-// WhatsAppButton est rendu ici → présent sur toutes les pages publiques
-// mais absent des pages admin.
 function PublicLayout({ children, showPageHero = false }) {
   return (
     <>
@@ -77,8 +76,6 @@ function PublicLayout({ children, showPageHero = false }) {
         </PageWrapper>
       </main>
       <Footer />
-
-      {/* ── Bouton WhatsApp flottant ── */}
       <WhatsAppButton />
     </>
   )
@@ -100,7 +97,7 @@ function AppRoutes() {
         <Route path="/news"      element={<PublicLayout showPageHero><News /></PublicLayout>} />
         <Route path="/contact"   element={<PublicLayout showPageHero><Contact /></PublicLayout>} />
 
-        {/* Pages détail — ont leur propre Header/Footer/Hero intégrés */}
+        {/* Pages détail */}
         <Route path="/news/:slug"       element={<><NewsDetail />      <WhatsAppButton /></>} />
         <Route path="/solutions/:slug"  element={<><SolutionDetail />  <WhatsAppButton /></>} />
         <Route path="/portfolio/:slug"  element={<><PortfolioDetail /> <WhatsAppButton /></>} />
@@ -120,6 +117,7 @@ function AppRoutes() {
           <Route path="clients"    element={<AdminClients />} />
           <Route path="news"       element={<AdminNews />} />
           <Route path="contacts"   element={<AdminContacts />} />
+          <Route path="socials"    element={<AdminSocials />} />
         </Route>
 
         {/* Fallback */}
