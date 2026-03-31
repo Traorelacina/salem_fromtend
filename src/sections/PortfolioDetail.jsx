@@ -469,14 +469,7 @@ const PortfolioDetail = () => {
                   }}>
                     {project.title}
                   </h1>
-                  {project.short_description && (
-                    <p style={{
-                      color:'rgba(255,255,255,0.72)', marginTop:'0.65rem',
-                      fontSize:'0.96rem', lineHeight:1.6, maxWidth:'620px',
-                    }}>
-                      {project.short_description}
-                    </p>
-                  )}
+                  
                 </motion.div>
               </div>
             </div>
