@@ -142,7 +142,7 @@ const Services = () => {
         >
           <SectionTitle
   subtitle="Notre expertise"
-  title="Des solutions digitales 360°"
+  title="Des solutions pour répondre à vos besoins"
   description="Logiciels, sites web, applications, vidéosurveillance, réseaux, marketing, audit et GPS tracking — de la conception au déploiement, nous couvrons tous vos besoins IT."
   center
 />

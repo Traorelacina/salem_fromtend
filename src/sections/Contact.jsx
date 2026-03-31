@@ -126,14 +126,34 @@ const Contact = () => {
                 >
                   <info.icon size={20} style={{ color: info.color }} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-400 font-medium mb-0.5">{info.label}</p>
 
                   {info.lines ? (
-                    <div className="flex flex-col gap-0.5">
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'max-content',
+                        gap: '3px',
+                        marginTop: '2px',
+                      }}
+                    >
                       {info.lines.map(l => (
-                        <a key={l.href} href={l.href}
-                          className="font-semibold text-dark text-sm hover:text-primary transition-colors">
+                        <a
+                          key={l.href}
+                          href={l.href}
+                          style={{
+                            fontFamily: "'DM Mono', 'Roboto Mono', 'Courier New', monospace",
+                            fontSize: '0.82rem',
+                            fontWeight: 600,
+                            letterSpacing: '0.03em',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            whiteSpace: 'nowrap',
+                            transition: 'color 0.2s',
+                          }}
+                          className="hover:text-primary"
+                        >
                           {l.display}
                         </a>
                       ))}
@@ -147,7 +167,7 @@ const Contact = () => {
                     <p className="font-semibold text-dark text-sm">{info.value}</p>
                   )}
 
-                  <p className="text-gray-400 text-xs mt-0.5">{info.sub}</p>
+                  <p className="text-gray-400 text-xs mt-1">{info.sub}</p>
                 </div>
               </motion.div>
             ))}
@@ -264,7 +284,7 @@ const Contact = () => {
                           placeholder="+225 XX XX XX XX XX"
                           className={`form-input w-full px-4 py-3 rounded-xl border text-sm bg-gray-50 focus:bg-white transition-all ${errors.phone ? 'border-red-400' : 'border-gray-200'}`}
                         />
-                        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                        {errors.phone && <p className="text-red-500 text-xs mt-2">{errors.phone}</p>}
                       </div>
                       <div>
                         <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Société</label>

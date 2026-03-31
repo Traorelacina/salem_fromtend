@@ -52,7 +52,7 @@ const Header = () => {
   const CYAN  = '#4fc3f7'
   const NAVY  = '#0b0f2a'
   const BLUE  = '#60a5fa'
-  const PURE_BLUE = '#0066FF'  // Bleu pur pour les textes du menu
+  const PURE_BLUE = '#0047FF'  // Bleu pur électrique pour les textes du menu
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -74,7 +74,7 @@ const Header = () => {
           font-family: 'DM Sans', sans-serif;
         }
 
-        /* Nav link base - texte en gras et bleu pur */
+        /* Nav link base - texte en gras et bleu pur électrique */
         .st-nav-btn {
           position: relative;
           display: inline-flex;
@@ -82,8 +82,8 @@ const Header = () => {
           gap: 4px;
           padding: 8px 14px;
           border-radius: 10px;
-          font-size: 0.88rem;
-          font-weight: 700;  /* Mis en gras */
+          font-size: 1rem;        /* ↑ agrandi depuis 0.88rem */
+          font-weight: 700;
           letter-spacing: 0.01em;
           white-space: nowrap;
           background: transparent;
@@ -91,7 +91,7 @@ const Header = () => {
           cursor: pointer;
           transition: color 0.25s, background 0.25s;
           font-family: 'DM Sans', sans-serif;
-          color: #0066FF;  /* Bleu pur */
+          color: #0047FF;         /* Bleu pur électrique */
         }
         .st-nav-btn::after {
           content: '';
@@ -110,9 +110,9 @@ const Header = () => {
           width: 20px;
         }
 
-        /* Light mode nav - toujours bleu pur */
-        .st-nav-btn:hover { color: #0066FF; background: rgba(79,195,247,0.07); }
-        .st-nav-btn.active { color: #0066FF; background: rgba(79,195,247,0.10); font-weight: 800; }
+        /* Light mode nav */
+        .st-nav-btn:hover { color: #0047FF; background: rgba(79,195,247,0.07); }
+        .st-nav-btn.active { color: #0047FF; background: rgba(79,195,247,0.10); font-weight: 800; }
 
         /* CTA button */
         .st-cta {
@@ -131,20 +131,20 @@ const Header = () => {
           box-shadow: 0 8px 26px rgba(79,195,247,0.42);
         }
 
-        /* Mobile item - texte en gras et bleu pur */
+        /* Mobile item - texte en gras et bleu pur électrique */
         .st-mob-btn {
           display: block; width: 100%; text-align: left;
           padding: 13px 16px;
           border-radius: 12px;
-          font-size: 0.95rem;
-          font-weight: 700;  /* Mis en gras */
+          font-size: 1.05rem;     /* ↑ agrandi depuis 0.95rem */
+          font-weight: 700;
           background: transparent; border: none; cursor: pointer;
           transition: background 0.2s, color 0.2s;
           font-family: 'DM Sans', sans-serif;
-          color: #0066FF;  /* Bleu pur */
+          color: #0047FF;         /* Bleu pur électrique */
         }
-        .st-mob-btn:hover  { background: rgba(79,195,247,0.08); color: #0066FF; }
-        .st-mob-btn.active { background: rgba(79,195,247,0.12); color: #0066FF; font-weight: 800; }
+        .st-mob-btn:hover  { background: rgba(79,195,247,0.08); color: #0047FF; }
+        .st-mob-btn.active { background: rgba(79,195,247,0.12); color: #0047FF; font-weight: 800; }
 
         /* Thin top accent line */
         .st-accent-line {
@@ -245,7 +245,6 @@ const Header = () => {
                 display: 'none',
                 background: 'transparent', border: 'none', cursor: 'pointer',
                 padding: '8px', borderRadius: '10px',
-                /* Toujours en NAVY */
                 color: NAVY,
                 transition: 'background 0.2s',
               }}

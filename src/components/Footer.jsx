@@ -30,6 +30,12 @@ const Footer = () => {
     { icon: <Twitter   size={18} />, href: '#', label: 'Twitter'   },
   ]
 
+  const phoneNumbers = [
+    { display: '+225 07 08 42 55 01', href: 'tel:+2250708425501' },
+    { display: '+225 05 04 59 47 69', href: 'tel:+2250504594769' },
+    { display: '+225 07 47 11 15 70', href: 'tel:+2250747111570' },
+  ]
+
   return (
     <footer className="bg-dark text-white">
       {/* Top gradient bar */}
@@ -119,10 +125,24 @@ const Footer = () => {
                 {/* Téléphones */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <Phone size={16} className="text-secondary mt-0.5 flex-shrink-0" />
-                  <div className="flex flex-col gap-1">
-                    <a href="tel:+2250708425501" className="hover:text-white transition-colors">+225 07 08 42 55 01</a>
-                    <a href="tel:+2250504594769" className="hover:text-white transition-colors">+225 05 04 59 47 69</a>
-                    <a href="tel:+2250747111570" className="hover:text-white transition-colors">+225 07 47 11 15 70</a>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    {phoneNumbers.map((p) => (
+                      <a
+                        key={p.href}
+                        href={p.href}
+                        style={{
+                          fontFamily: "'DM Mono', 'Roboto Mono', 'Courier New', monospace",
+                          fontSize: '1rem',
+                          fontWeight: 500,
+                          letterSpacing: '0.03em',
+                          whiteSpace: 'nowrap',
+                          transition: 'color 0.2s',
+                        }}
+                        className="hover:text-white transition-colors"
+                      >
+                        {p.display}
+                      </a>
+                    ))}
                   </div>
                 </li>
 
