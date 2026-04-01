@@ -1,38 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import {
-  MapPin, Phone, Mail, ArrowRight,
-  Facebook, Linkedin, Instagram, Twitter,
-  Youtube, Globe, Send, Music2, Share2,
-} from 'lucide-react'
+import { MapPin, Phone, Mail, ArrowRight } from 'lucide-react'
 import Container from './Container'
 
 const API = import.meta.env.VITE_API_URL ?? '/api'
-
-// ── Map icon key → composant Lucide ──────────────────────────
-const ICON_MAP = {
-  facebook:  Facebook,
-  linkedin:  Linkedin,
-  instagram: Instagram,
-  twitter:   Twitter,
-  youtube:   Youtube,
-  tiktok:    Music2,
-  telegram:  Send,
-  whatsapp:  Share2,
-  website:   Globe,
-}
-
-function SocialIcon({ iconKey, size = 17 }) {
-  const Icon = ICON_MAP[iconKey] ?? Globe
-  return <Icon size={size} />
-}
 
 const Footer = () => {
   const year = new Date().getFullYear()
   const [socials, setSocials] = useState([])
 
-  // Fetch socials dynamiques depuis l'API publique
   useEffect(() => {
     fetch(`${API}/v1/socials`, { headers: { Accept: 'application/json' } })
       .then(r => r.json())
@@ -65,7 +42,6 @@ const Footer = () => {
 
   return (
     <footer className="bg-dark text-white">
-      {/* Top gradient bar */}
       <div className="h-1 gradient-bg" />
 
       <div className="pt-16 pb-8">
@@ -81,7 +57,7 @@ const Footer = () => {
                 Agence IT spécialisée dans le développement web, mobile, vidéosurveillance et GPS trackers. Votre partenaire digital de confiance en Côte d'Ivoire depuis 2015.
               </p>
 
-              {/* ── Réseaux sociaux dynamiques ── */}
+              {/* ── Réseaux sociaux dynamiques avec icônes uploadées ── */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {socials.length > 0 ? (
                   socials.map(social => (
@@ -94,28 +70,35 @@ const Footer = () => {
                       title={social.name}
                       whileHover={{ y: -3, scale: 1.1 }}
                       style={{
-                        width: '36px',
-                        height: '36px',
+                        width: '38px',
+                        height: '38px',
                         borderRadius: '10px',
                         background: `${social.color ?? '#ffffff'}18`,
                         border: `1px solid ${social.color ?? '#ffffff'}28`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: social.color ?? 'rgba(255,255,255,0.7)',
-                        transition: 'background 0.2s, border-color 0.2s',
                         textDecoration: 'none',
+                        overflow: 'hidden',
+                        transition: 'background 0.2s, border-color 0.2s',
+                        flexShrink: 0,
                       }}
                       onMouseEnter={e => {
-                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}30`
-                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}50`
+                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}32`
+                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}55`
                       }}
                       onMouseLeave={e => {
                         e.currentTarget.style.background = `${social.color ?? '#ffffff'}18`
                         e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}28`
                       }}
                     >
-                      <SocialIcon iconKey={social.icon} size={17} />
+                      {social.icon_url && (
+                        <img
+                          src={social.icon_url}
+                          alt={social.name}
+                          style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+                        />
+                      )}
                     </motion.a>
                   ))
                 ) : (
@@ -170,7 +153,6 @@ const Footer = () => {
               </h4>
               <ul className="space-y-4">
 
-                {/* Adresse */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <MapPin size={16} className="text-secondary mt-0.5 flex-shrink-0" />
                   <div>
@@ -180,7 +162,6 @@ const Footer = () => {
                   </div>
                 </li>
 
-                {/* Téléphones */}
                 <li className="flex items-start gap-3 text-blue-200/70 text-sm">
                   <Phone size={16} className="text-secondary mt-0.5 flex-shrink-0" />
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -204,7 +185,6 @@ const Footer = () => {
                   </div>
                 </li>
 
-                {/* Email */}
                 <li className="flex items-center gap-3 text-blue-200/70 text-sm">
                   <Mail size={16} className="text-secondary flex-shrink-0" />
                   <a href="mailto:salemtechnology2000@gmail.com" className="hover:text-white transition-colors break-all">
@@ -213,7 +193,6 @@ const Footer = () => {
                 </li>
               </ul>
 
-              {/* Horaires */}
               <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
                 <p className="text-xs text-blue-200/60 mb-2">Horaires d'ouverture</p>
                 <p className="text-sm text-white/80">Lun – Ven : 8h00 – 18h00</p>

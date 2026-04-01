@@ -30,7 +30,7 @@ import AdminServices     from './admin/pages/AdminServices'
 import AdminSolutions    from './admin/pages/AdminSolutions'
 import AdminPortfolio    from './admin/pages/AdminPortfolio'
 import AdminClients      from './admin/pages/AdminClients'
-import AdminNews         from './admin/pages/AdminNews'
+import AdminNews         from './admin/pages/AdminNews'  
 import AdminContacts     from './admin/pages/AdminContacts'
 import AdminSocials      from './admin/pages/Adminsocials'
 
