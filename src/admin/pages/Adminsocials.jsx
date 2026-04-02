@@ -6,20 +6,20 @@ import {
 } from '../components/AdminUI'
 import { Plus, Pencil, Trash2, Share2, Upload, Image as ImageIcon } from 'lucide-react'
 
-const EMPTY = { name: '', url: '', color: '#1877F2', order: 0, is_active: true }
+const EMPTY = { name: '', url: '', order: 0, is_active: true }
 
 export default function AdminSocials() {
   const { get, post, del } = useApi()
-  const [items,    setItems]    = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [modal,    setModal]    = useState(false)
-  const [editing,  setEditing]  = useState(null)
-  const [form,     setForm]     = useState(EMPTY)
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [modal, setModal] = useState(false)
+  const [editing, setEditing] = useState(null)
+  const [form, setForm] = useState(EMPTY)
   const [iconFile, setIconFile] = useState(null)
   const [iconPrev, setIconPrev] = useState(null)
-  const [saving,   setSaving]   = useState(false)
-  const [confirm,  setConfirm]  = useState(null)
-  const [toast,    setToast]    = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [confirm, setConfirm] = useState(null)
+  const [toast, setToast] = useState(null)
   const fileRef = useRef()
 
   const load = () => {
@@ -48,10 +48,9 @@ export default function AdminSocials() {
   const openEdit = (item) => {
     setEditing(item)
     setForm({
-      name:      item.name,
-      url:       item.url,
-      color:     item.color ?? '#1877F2',
-      order:     item.order,
+      name: item.name,
+      url: item.url,
+      order: item.order,
       is_active: item.is_active,
     })
     setIconFile(null)
@@ -80,13 +79,12 @@ export default function AdminSocials() {
     setSaving(true)
     try {
       const fd = new FormData()
-      fd.append('name',      form.name)
-      fd.append('url',       form.url)
-      fd.append('color',     form.color)
-      fd.append('order',     String(form.order))
+      fd.append('name', form.name)
+      fd.append('url', form.url)
+      fd.append('order', String(form.order))
       fd.append('is_active', form.is_active ? '1' : '0')
       if (iconFile) fd.append('icon', iconFile)
-      if (editing)  fd.append('_method', 'PUT')
+      if (editing) fd.append('_method', 'PUT')
 
       const endpoint = editing ? `/admin/socials/${editing.id}` : '/admin/socials'
       const res = await post(endpoint, fd)
@@ -148,7 +146,7 @@ export default function AdminSocials() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', background: '#f8fafc' }}>
-                  {['Réseau', 'Lien', 'Couleur', 'Ordre', 'Statut', 'Actions'].map(h => (
+                  {['Réseau', 'Lien', 'Ordre', 'Statut', 'Actions'].map(h => (
                     <th key={h} style={{ padding: '0.75rem 1rem', color: 'var(--text-2)', fontSize: '0.71rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', textAlign: 'left', whiteSpace: 'nowrap' }}>
                       {h}
                     </th>
@@ -165,17 +163,26 @@ export default function AdminSocials() {
                   >
                     {/* Réseau */}
                     <td style={{ padding: '0.85rem 1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{
-                          width: '38px', height: '38px', borderRadius: '10px',
-                          background: `${item.color ?? '#6366F1'}15`,
-                          border: `1px solid ${item.color ?? '#6366F1'}30`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0, overflow: 'hidden',
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          background: '#f1f5f9',
+                          border: '1px solid #e2e8f0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          overflow: 'hidden',
                         }}>
                           {item.icon_url
-                            ? <img src={item.icon_url} alt={item.name} style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
-                            : <ImageIcon size={16} style={{ color: 'var(--text-3)' }} />
+                            ? <img
+                                src={item.icon_url}
+                                alt={item.name}
+                                style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+                              />
+                            : <ImageIcon size={20} style={{ color: 'var(--text-3)' }} />
                           }
                         </div>
                         <span style={{ fontWeight: 600, fontSize: '0.87rem', color: 'var(--text)' }}>
@@ -194,16 +201,6 @@ export default function AdminSocials() {
                       >
                         {item.url}
                       </a>
-                    </td>
-
-                    {/* Couleur */}
-                    <td style={{ padding: '0.85rem 1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                        <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: item.color ?? '#ccc', border: '1px solid rgba(0,0,0,0.1)', flexShrink: 0 }} />
-                        <span style={{ fontSize: '0.78rem', color: 'var(--text-3)', fontFamily: 'monospace' }}>
-                          {item.color ?? '—'}
-                        </span>
-                      </div>
                     </td>
 
                     {/* Ordre */}
@@ -243,7 +240,7 @@ export default function AdminSocials() {
         open={modal}
         onClose={handleCloseModal}
         title={editing ? 'Modifier le réseau' : 'Ajouter un réseau social'}
-        width="480px"
+        width="460px"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
 
@@ -264,16 +261,39 @@ export default function AdminSocials() {
                 justifyContent: 'center',
                 gap: '10px',
                 cursor: 'pointer',
-                background: iconPrev ? 'var(--bg-green-lt)' : '#fafafa',
+                background: iconPrev ? '#f0fdf4' : '#fafafa',
                 transition: 'all 0.2s',
-                minHeight: '110px',
+                minHeight: '120px',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.background = '#f0fdf4' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = iconPrev ? 'var(--primary)' : 'var(--border)'; e.currentTarget.style.background = iconPrev ? 'var(--bg-green-lt)' : '#fafafa' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--primary)'
+                e.currentTarget.style.background = '#f0fdf4'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = iconPrev ? 'var(--primary)' : 'var(--border)'
+                e.currentTarget.style.background = iconPrev ? '#f0fdf4' : '#fafafa'
+              }}
             >
               {iconPrev ? (
                 <>
-                  <img src={iconPrev} alt="Aperçu" style={{ width: '52px', height: '52px', objectFit: 'contain', borderRadius: '8px' }} />
+                  <div style={{
+                    width: '72px',
+                    height: '72px',
+                    borderRadius: '14px',
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}>
+                    <img
+                      src={iconPrev}
+                      alt="Aperçu"
+                      style={{ width: '52px', height: '52px', objectFit: 'contain' }}
+                    />
+                  </div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 600 }}>
                     {iconFile ? iconFile.name : "Icône actuelle — cliquer pour changer"}
                   </span>
@@ -317,53 +337,33 @@ export default function AdminSocials() {
             placeholder="https://facebook.com/votre-page"
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-2)' }}>
-                Couleur de fond
-              </label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input
-                  type="color"
-                  value={form.color}
-                  onChange={f('color')}
-                  style={{ width: '42px', height: '36px', border: '1.5px solid var(--border)', borderRadius: '7px', cursor: 'pointer', padding: '2px', flexShrink: 0 }}
-                />
-                <Input
-                  value={form.color}
-                  onChange={f('color')}
-                  placeholder="#1877F2"
-                  style={{ fontFamily: 'monospace', fontSize: '0.82rem' }}
-                />
-              </div>
-            </div>
-
-            <Input
-              label="Ordre d'affichage"
-              type="number"
-              value={form.order}
-              onChange={(e) => setForm(p => ({ ...p, order: parseInt(e.target.value) || 0 }))}
-              min="0"
-            />
-          </div>
+          <Input
+            label="Ordre d'affichage"
+            type="number"
+            value={form.order}
+            onChange={(e) => setForm(p => ({ ...p, order: parseInt(e.target.value) || 0 }))}
+            min="0"
+          />
 
           {/* Prévisualisation footer */}
           <div style={{ padding: '0.85rem 1rem', background: '#1a1f3a', borderRadius: '10px' }}>
             <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', marginBottom: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Aperçu dans le footer
             </p>
-            <div
-              style={{
-                width: '38px', height: '38px', borderRadius: '10px',
-                background: `${form.color}20`,
-                border: `1px solid ${form.color}40`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-            >
+            <div style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '12px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+            }}>
               {iconPrev
-                ? <img src={iconPrev} alt="" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
-                : <ImageIcon size={16} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                ? <img src={iconPrev} alt="" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
+                : <ImageIcon size={18} style={{ color: 'rgba(255,255,255,0.3)' }} />
               }
             </div>
           </div>
