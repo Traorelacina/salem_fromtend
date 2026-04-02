@@ -58,7 +58,7 @@ const Footer = () => {
               </p>
 
               {/* ── Réseaux sociaux dynamiques avec icônes uploadées ── */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 {socials.length > 0 ? (
                   socials.map(social => (
                     <motion.a
@@ -70,9 +70,9 @@ const Footer = () => {
                       title={social.name}
                       whileHover={{ y: -3, scale: 1.1 }}
                       style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '10px',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '12px',
                         background: `${social.color ?? '#ffffff'}18`,
                         border: `1px solid ${social.color ?? '#ffffff'}28`,
                         display: 'flex',
@@ -96,7 +96,7 @@ const Footer = () => {
                         <img
                           src={social.icon_url}
                           alt={social.name}
-                          style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+                          style={{ width: '30px', height: '30px', objectFit: 'contain' }}
                         />
                       )}
                     </motion.a>
@@ -166,7 +166,7 @@ const Footer = () => {
                   <Phone size={16} className="text-secondary mt-0.5 flex-shrink-0" />
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     {phoneNumbers.map((p) => (
-                      <a
+                      <a 
                         key={p.href}
                         href={p.href}
                         style={{
