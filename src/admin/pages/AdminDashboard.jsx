@@ -48,7 +48,6 @@ export default function AdminDashboard() {
   }
 
   const quickActions = [
-    { label: 'Nouvelle solution',    to: '/admin/solutions', Icon: Layers    },
     { label: 'Nouvelle réalisation', to: '/admin/portfolio', Icon: Briefcase },
     { label: 'Nouvel article',       to: '/admin/news',      Icon: Newspaper },
   ]
