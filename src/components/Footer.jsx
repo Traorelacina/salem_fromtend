@@ -58,7 +58,7 @@ const Footer = () => {
               </p>
 
               {/* ── Réseaux sociaux dynamiques avec icônes uploadées ── */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                 {socials.length > 0 ? (
                   socials.map(social => (
                     <motion.a
@@ -70,33 +70,21 @@ const Footer = () => {
                       title={social.name}
                       whileHover={{ y: -3, scale: 1.1 }}
                       style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '12px',
-                        background: `${social.color ?? '#ffffff'}18`,
-                        border: `1px solid ${social.color ?? '#ffffff'}28`,
+                        width: '44px',
+                        height: '44px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         textDecoration: 'none',
-                        overflow: 'hidden',
-                        transition: 'background 0.2s, border-color 0.2s',
+                        transition: 'transform 0.2s',
                         flexShrink: 0,
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}32`
-                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}55`
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.background = `${social.color ?? '#ffffff'}18`
-                        e.currentTarget.style.borderColor = `${social.color ?? '#ffffff'}28`
                       }}
                     >
                       {social.icon_url && (
                         <img
                           src={social.icon_url}
                           alt={social.name}
-                          style={{ width: '30px', height: '30px', objectFit: 'contain' }}
+                          style={{ width: '32px', height: '32px', objectFit: 'contain' }}
                         />
                       )}
                     </motion.a>
